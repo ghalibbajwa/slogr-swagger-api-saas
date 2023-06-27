@@ -1,0 +1,37 @@
+version: "2"
+
+services:
+  app:
+    image: ghalibbajwa/slogr-controller-laravel:v2
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    
+  db:
+    image: postgres
+    command: postgres -c 'max_connections=300'
+    environment:
+      POSTGRES_DB: laravel
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+
+  migrate:
+    image: ghalibbajwa/slogr-controller-laravel:v2
+    depends_on:
+      - db
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=laravel
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=root
+    command: sh -c 'php artisan migrate ; php artisan db:seed --class=ProfilesTableSeeder ; php artisan import:csv  ; php artisan view:clear'
+
+volumes:
+  db_data:
+
+

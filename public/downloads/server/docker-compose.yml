@@ -1,0 +1,11 @@
+version: "2"
+services:
+  server:
+    restart: always
+    image: ghalibbajwa/slogr-server:latest
+    ports:
+      - "8009:8009"
+      - "60000:60000/udp"
+    
+
+ 

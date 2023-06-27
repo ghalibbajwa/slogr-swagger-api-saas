@@ -1,0 +1,360 @@
+<?php
+
+namespace App\Http\Controllers\WebsiteController;
+
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\URL;
+use Validator;
+use App\sessions;
+use App\profiles;
+use App\agents;
+use GuzzleHttp\Client;
+use GuzzleHttp;
+use App\analytics;
+use Config;
+
+use Illuminate\Routing\UrlGenerator;
+
+class sessionController extends Controller
+{
+
+    /**
+     * @OA\Get(
+     *     path="/api/sessions",
+     *     summary="Get Sessions",
+     *     description="Retrieve data for sessions, agents, profiles, and pros",
+     *     tags={"Sessions"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="agents",
+     *                     type="array",
+     *                     @OA\Items()
+     *                 ),
+     *                 @OA\Property(
+     *                     property="sessions",
+     *                     type="array",
+     *                     @OA\Items()
+     *                 ),
+     *                 @OA\Property(
+     *                     property="profiles",
+     *                     type="array",
+     *                     @OA\Items()
+     *                 ),
+     *                 @OA\Property(
+     *                     property="pros",
+     *                     type="object",
+     *                     additionalProperties={}
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
+    public function index()
+    {
+        $sessions = sessions::all();
+        $agents = agents::all();
+        $profiles = profiles::all();
+        $pros = [];
+
+        foreach ($profiles as $pro) {
+            $pros[$pro->id] = $pro;
+        }
+
+        $data['agents'] = $agents;
+        $data['sessions'] = $sessions;
+        $data['profiles'] = $profiles;
+        $data['pros'] = $pros;
+        return response()->json(['data' => $data])->setStatusCode(200);
+
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/add-session",
+     *     summary="Create a session",
+     *     description="Create a new session",
+     *     tags={"Sessions"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="serve",
+     *                 type="integer",
+     *                 description="Server ID",
+     *                 example="1"
+     *             ),
+     *             @OA\Property(
+     *                 property="client",
+     *                 type="integer",
+     *                 description="Client ID",
+     *                 example="2"
+     *             ),
+     *             @OA\Property(
+     *                 property="profile",
+     *                 type="integer",
+     *                 description="Profile ID",
+     *                 example="3"
+     *             ),
+     *             @OA\Property(
+     *                 property="schedule",
+     *                 type="integer",
+     *                 description="Schedule",
+     *                 example="180"
+     *             ),
+     *             @OA\Property(
+     *                 property="count",
+     *                 type="integer",
+     *                 description="Count",
+     *                 example="10"
+     *             ),
+     *             @OA\Property(
+     *                 property="n_packets",
+     *                 type="integer",
+     *                 description="Number of packets",
+     *                 example="100"
+     *             ),
+     *             @OA\Property(
+     *                 property="p_interval",
+     *                 type="integer",
+     *                 description="Packet interval",
+     *                 example="10"
+     *             ),
+     *             @OA\Property(
+     *                 property="w_time",
+     *                 type="integer",
+     *                 description="Wait time",
+     *                 example="5"
+     *             ),
+     *             @OA\Property(
+     *                 property="dscp",
+     *                 type="integer",
+     *                 description="DSCP",
+     *                 example="46"
+     *             ),
+     *             @OA\Property(
+     *                 property="p_size",
+     *                 type="integer",
+     *                 description="Packet size",
+     *                 example="1500"
+     *             ),
+     *             @OA\Property(
+     *                 property="edit",
+     *                 type="boolean",
+     *                 description="Edit flag",
+     *                 example="false"
+     *             ),
+     *             @OA\Property(
+     *                 property="aid",
+     *                 type="integer",
+     *                 description="Session ID (required if edit flag is true)",
+     *                 example="1"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="session",
+     *                     
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=300,
+     *         description="Validation error or client unreachable",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 description="Error message"
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
+    public function store(Request $request)
+    {
+        // dd($request->all());
+
+        $validator = Validator::make($request->all(), [
+            'serve' => 'required|numeric',
+            'client' => 'required|numeric',
+            'profile' => 'required|numeric',
+            'schedule' => 'required|numeric|min:120',
+            'count' => 'required|numeric',
+            'n_packets' => 'required|numeric',
+            'p_interval' => 'required|numeric',
+            'w_time' => 'required|numeric',
+            'dscp' => 'required|numeric',
+            'p_size' => 'required|numeric'
+        ]);
+
+
+
+        // dd($validator->fails()); 
+        if ($validator->fails()) {
+
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
+
+        }
+
+        if ($request->edit == true) {
+            $session = sessions::find($request->aid);
+        } else {
+
+            $session = new sessions;
+        }
+
+
+        $session->server = $request->serve;
+        $session->s_name = agents::find($request->serve)->name;
+        $session->c_name = agents::find($request->client)->name;
+        $session->p_name = profiles::find($request->profile)->name;
+        $session->client = $request->client;
+        $session->profile = $request->profile;
+        $session->schedule = $request->schedule;
+        $session->count = $request->count;
+        $session->n_packets = $request->n_packets;
+        $session->p_interval = $request->p_interval;
+        $session->w_time = $request->w_time;
+        $session->dscp = $request->dscp;
+        $session->p_size = $request->p_size;
+
+
+        $session->save();
+        $code = $this->create_session($session);
+        if ($code == "suc") {
+
+            $success['session'] = $session;
+
+
+            return response()->json(['success' => $success])->setStatusCode(200);
+
+        } else {
+            return response()->json(['error' => 'client unreachable'])->setStatusCode(300);
+
+        }
+
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/delete-session",
+     *     summary="Delete a session",
+     *     description="Delete a session by ID",
+     *     tags={"Sessions"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Session ID",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="delete",
+     *                 type="integer",
+     *                 description="ID of the session to be deleted"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 description="Status of the deletion operation"
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
+    public function delete(Request $request)
+    {
+
+
+
+        $agent = sessions::find($request->delete);
+        $agent->delete();
+        return redirect()->back()->with('a_status', 'success');
+
+
+    }
+
+
+    function create_session($session)
+    {
+
+
+        try {
+
+
+            $client = new Client();
+
+            $cip = str_replace('http://', '', env('APP_URL'));
+
+            $ip = agents::find($session->client)->ipaddress;
+            $server = agents::find($session->server)->ipaddress;
+            $url = 'http://' . $ip . ':5000/exe';
+            $session->server = $server;
+            $session->cip = $cip;
+
+            $response = $client->post($url, [
+                GuzzleHttp\RequestOptions::JSON => $session // or 'json' => [...]
+            ]);
+            return "suc";
+
+        } catch (\Exception $e) {
+            return "error";
+        }
+
+
+
+    }
+
+    function report(Request $request)
+    {
+        //    return response($request->all());
+        $analytics = new analytics;
+
+        $analytics->session_id = (int) $request['test-name'];
+        $analytics->avg_down = (float) $request['avg-downlink-time(ms)'];
+        $analytics->avg_jitter = (float) $request['avg-jitter(ms)'];
+        $analytics->avg_up = (float) $request['avg-uplink-time(ms)'];
+        $analytics->avg_rtt = (float) $request['avg-rtt(ms)'];
+        $analytics->max_up = (float) $request['max-uplink-time(ms)'];
+        $analytics->max_rtt = (float) $request['max-rtt(ms)'];
+        $analytics->max_jitter = (float) $request['max-jitter(ms)'];
+        $analytics->max_down = (float) $request['max-downlink-time(ms)'];
+        $analytics->min_jitter = (float) $request['min-jitter(ms)'];
+        $analytics->min_rtt = (float) $request['min-rtt(ms)'];
+        $analytics->min_down = (float) $request['min-downlink-time(ms)'];
+        $analytics->min_up = (float) $request['min-uplink-time(ms)'];
+        $analytics->r_packets = (int) $request['received-packets'];
+        $analytics->st_down = (float) $request['std-dev-downlink-time(ms)'];
+        $analytics->st_up = (float) $request['std-dev-uplink-time(ms)'];
+        $analytics->st_rtt = (float) $request['td-dev-rtt(ms)'];
+        $analytics->t_packets = (int) $request['total-packets'];
+        $analytics->save();
+
+        return response("OK");
+
+
+    }
+}

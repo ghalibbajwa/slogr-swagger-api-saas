@@ -1,0 +1,22 @@
+FROM php:7.4-alpine
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Install dependencies
+RUN apk add --no-cache git postgresql-dev
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_pgsql
+
+
+
+# Copy Laravel project files
+COPY . .
+
+
+# Expose port 8000 for the built-in web server
+EXPOSE 80
+
+# Start the built-in web server
+# CMD ["php", "-S", "0.0.0.0:80"]

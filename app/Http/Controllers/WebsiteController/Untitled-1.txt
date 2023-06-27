@@ -1,0 +1,56 @@
+    /**
+ * @OA\Post(
+ *     path="/api/edit-agent",
+ *     summary="Edit agent",
+ *     description="update an existing agent",
+ *     tags={"Agents"},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\MediaType(
+ *             mediaType="application/json",
+ *             @OA\Schema(
+ *                 required={"edit", "name", "ip"},
+ *                 @OA\Property(
+ *                     property="edit",
+ *                     type="boolean",
+ *                     description="Flag indicating whether to edit an existing agent (true) or create a new agent (false)"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="aid",
+ *                     type="integer",
+ *                     description="ID of the agent to edit (required when 'edit' is true)"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="name",
+ *                     type="string",
+ *                     description="Name of the agent"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="ip",
+ *                     type="string",
+ *                     description="IP address of the agent"
+ *                 ),
+ *               
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Agent stored successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Invalid request"
+ *     ),
+ * security={{"passport": {}}},
+ *     @OA\Header(
+ *         header="Accept",
+ *         description="Accept header",
+ *         @OA\Schema(
+ *             type="string",
+ *             default="application/json"
+ *         )
+ *     )
+ *  
+ * )
+ */

@@ -1,0 +1,1281 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Slogr Controller API",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Register"
+                ],
+                "summary": "User Register",
+                "description": "User Register here",
+                "operationId": "Register",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "text"
+                                    },
+                                    "email": {
+                                        "type": "text"
+                                    },
+                                    "password": {
+                                        "type": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Register Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Register Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Login"
+                ],
+                "summary": "User Login",
+                "description": "Login User Here",
+                "operationId": "authLogin",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "email"
+                                    },
+                                    "password": {
+                                        "type": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Login Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Login Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/api/agents": {
+            "get": {
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Get agents",
+                "description": "Get all agents",
+                "operationId": "cb67e82c3f9c1690f8fd26be17c3bf29",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "agents": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/edit-agent": {
+            "post": {
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Edit agent",
+                "description": "update an existing agent",
+                "operationId": "a49818bac4cce192656aa33bbff354c1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "edit",
+                                    "name",
+                                    "ip"
+                                ],
+                                "properties": {
+                                    "edit": {
+                                        "description": "Flag indicating whether to edit an existing agent (true) or create a new agent (false)",
+                                        "type": "boolean"
+                                    },
+                                    "aid": {
+                                        "description": "ID of the agent to edit (required when 'edit' is true)",
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "description": "Name of the agent",
+                                        "type": "string"
+                                    },
+                                    "ip": {
+                                        "description": "IP address of the agent",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Agent stored successfully"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/delete-agent": {
+            "post": {
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Delete an agent",
+                "description": "Delete an agent by ID",
+                "operationId": "2d6654d2391e3ed8a8ef900e2f63ecc9",
+                "requestBody": {
+                    "description": "Agent ID",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "delete": {
+                                        "description": "The ID of the agent to be deleted",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Agent deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "description": "Message indicating successful deletion",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/analytics/{sid}": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Get session details",
+                "description": "Retrieve session details by ID",
+                "operationId": "c3d27cc1ec71a5940edaf64a9ab24cef",
+                "parameters": [
+                    {
+                        "name": "sid",
+                        "in": "path",
+                        "description": "Session ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "analytic": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "client": {
+                                                    "type": "object"
+                                                },
+                                                "server": {
+                                                    "type": "object"
+                                                },
+                                                "rtt": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "up": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "down": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "profile": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/agentlogs/{id}": {
+            "get": {
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Get agent logs",
+                "description": "Retrieve agent logs",
+                "operationId": "b3b7adb58fb6e3fb0f50cdb62bfb40d6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Agent ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "logs": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "300": {
+                        "description": "Client Unreachable",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/agentdata/{id}/{profile}": {
+            "get": {
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Get agent data",
+                "description": "Retrieve agent data",
+                "operationId": "d293cee9c8945df838ec78895128b3ff",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Agent ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "pro",
+                        "in": "path",
+                        "description": "Profile ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "properties": {
+                                                "res": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "agent": {
+                                                    "type": "object"
+                                                },
+                                                "pros": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "profile": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "300": {
+                        "description": "Client Unreachable",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/groups": {
+            "get": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "Get data for Groups",
+                "description": "Get data for agents, sessions, profiles, and groups",
+                "operationId": "e425dc3f886181aa2a336ab03c5ba48f",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "agents": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "content": {
+                                                                "type": "string"
+                                                            },
+                                                            "classses": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "sessions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "content": {
+                                                                "type": "string"
+                                                            },
+                                                            "classses": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "profile": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "content": {
+                                                                "type": "string"
+                                                            },
+                                                            "classses": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "groups": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "content": {
+                                                                "type": "string"
+                                                            },
+                                                            "classses": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/add-group": {
+            "post": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "Store data",
+                "description": "Store agent, session, and profile data",
+                "operationId": "42e75969ea396951802d49df3fc5d091",
+                "requestBody": {
+                    "description": "Data to be stored",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "agent": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "session": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "profile": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "properties": {
+                                                "agents": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "sessions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "profiles": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-group": {
+            "post": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "Get group data",
+                "description": "Retrieve data for a specific group",
+                "operationId": "ae92751a71ca9cc47382d84697da698a",
+                "requestBody": {
+                    "description": "Group ID",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "properties": {
+                                                "group": {
+                                                    "type": "object"
+                                                },
+                                                "grouped": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "content": {
+                                                                "type": "string"
+                                                            },
+                                                            "classses": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/map": {
+            "get": {
+                "tags": [
+                    "Map"
+                ],
+                "summary": "Get Map Data",
+                "description": "Retrieve data relevant to map including pointers, lines etc",
+                "operationId": "80869389a3704b4aa09ef6b36eb70d61",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "sessions": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "pointers": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "groups": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "profiles": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "pros": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "sdata": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "glinks": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "gpros": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "poins": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/index": {
+            "get": {
+                "tags": [
+                    "Profiles"
+                ],
+                "summary": "Get profiles",
+                "description": "Retrieve all profiles",
+                "operationId": "edf5a886f5091d3f94118cff1f6fd8c6",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "profiles": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/add-profile": {
+            "post": {
+                "tags": [
+                    "Profiles"
+                ],
+                "summary": "Create a profile",
+                "description": "Create a new profile",
+                "operationId": "22f7c233776c3d20259c5d9390549bb3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Profile name",
+                                        "type": "string",
+                                        "example": "Profile 1"
+                                    },
+                                    "p_size": {
+                                        "description": "Packet size",
+                                        "type": "integer",
+                                        "example": "1500"
+                                    },
+                                    "count": {
+                                        "description": "Count",
+                                        "type": "integer",
+                                        "example": "10"
+                                    },
+                                    "n_packets": {
+                                        "description": "Number of packets",
+                                        "type": "integer",
+                                        "example": "100"
+                                    },
+                                    "p_interval": {
+                                        "description": "Packet interval",
+                                        "type": "integer",
+                                        "example": "10"
+                                    },
+                                    "w_time": {
+                                        "description": "Wait time",
+                                        "type": "integer",
+                                        "example": "5"
+                                    },
+                                    "dscp": {
+                                        "description": "DSCP",
+                                        "type": "integer",
+                                        "example": "46"
+                                    },
+                                    "max_loss": {
+                                        "description": "Maximum loss",
+                                        "type": "integer",
+                                        "example": "5"
+                                    },
+                                    "max_down": {
+                                        "description": "Maximum downlink time",
+                                        "type": "integer",
+                                        "example": "50"
+                                    },
+                                    "max_up": {
+                                        "description": "Maximum uplink time",
+                                        "type": "integer",
+                                        "example": "50"
+                                    },
+                                    "max_jitter": {
+                                        "description": "Maximum jitter",
+                                        "type": "integer",
+                                        "example": "10"
+                                    },
+                                    "max_rtt": {
+                                        "description": "Maximum RTT",
+                                        "type": "integer",
+                                        "example": "100"
+                                    },
+                                    "edit": {
+                                        "description": "Edit flag",
+                                        "type": "boolean",
+                                        "example": "false"
+                                    },
+                                    "aid": {
+                                        "description": "Profile ID (required if edit flag is true)",
+                                        "type": "integer",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "properties": {
+                                                "profile": {}
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "300": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Error message",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/delete-profile": {
+            "post": {
+                "tags": [
+                    "Profiles"
+                ],
+                "summary": "Delete a profile",
+                "description": "Delete a profile by ID",
+                "operationId": "3c5c7640dc595d01f0d6c7ea9942b027",
+                "requestBody": {
+                    "description": "Profile ID",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "delete": {
+                                        "description": "ID of the profile to be deleted",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Status of the deletion operation",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/push/{id}": {
+            "get": {
+                "tags": [
+                    "Profiles"
+                ],
+                "summary": "Push profile to clients",
+                "description": "Push the specified profile to clients",
+                "operationId": "bdc16da4f078c742b589720095e4eef3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Profile ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/api/sessions": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Get Sessions",
+                "description": "Retrieve data for sessions, agents, profiles, and pros",
+                "operationId": "085d6015f7d00eed4dcc5780a0af4d9e",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "agents": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "sessions": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "profiles": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "pros": {
+                                                    "type": "object",
+                                                    "additionalProperties": []
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/add-session": {
+            "post": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Create a session",
+                "description": "Create a new session",
+                "operationId": "3b5e31aacf66d964856cd93ab0127fee",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "serve": {
+                                        "description": "Server ID",
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "client": {
+                                        "description": "Client ID",
+                                        "type": "integer",
+                                        "example": "2"
+                                    },
+                                    "profile": {
+                                        "description": "Profile ID",
+                                        "type": "integer",
+                                        "example": "3"
+                                    },
+                                    "schedule": {
+                                        "description": "Schedule",
+                                        "type": "integer",
+                                        "example": "180"
+                                    },
+                                    "count": {
+                                        "description": "Count",
+                                        "type": "integer",
+                                        "example": "10"
+                                    },
+                                    "n_packets": {
+                                        "description": "Number of packets",
+                                        "type": "integer",
+                                        "example": "100"
+                                    },
+                                    "p_interval": {
+                                        "description": "Packet interval",
+                                        "type": "integer",
+                                        "example": "10"
+                                    },
+                                    "w_time": {
+                                        "description": "Wait time",
+                                        "type": "integer",
+                                        "example": "5"
+                                    },
+                                    "dscp": {
+                                        "description": "DSCP",
+                                        "type": "integer",
+                                        "example": "46"
+                                    },
+                                    "p_size": {
+                                        "description": "Packet size",
+                                        "type": "integer",
+                                        "example": "1500"
+                                    },
+                                    "edit": {
+                                        "description": "Edit flag",
+                                        "type": "boolean",
+                                        "example": "false"
+                                    },
+                                    "aid": {
+                                        "description": "Session ID (required if edit flag is true)",
+                                        "type": "integer",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "properties": {
+                                                "session": {}
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "300": {
+                        "description": "Validation error or client unreachable",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Error message",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/delete-session": {
+            "post": {
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Delete a session",
+                "description": "Delete a session by ID",
+                "operationId": "952d37d2a140d3e84cf907bf05c944fa",
+                "requestBody": {
+                    "description": "Session ID",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "delete": {
+                                        "description": "ID of the session to be deleted",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Status of the deletion operation",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "security": {
+                "passport": {
+                    "type": "oauth2",
+                    "description": "Laravel passport oauth2 security.",
+                    "in": "header",
+                    "scheme": "https",
+                    "flows": {
+                        "password": {
+                            "authorizationUrl": "localhost/slogr/oauth/authorize",
+                            "tokenUrl": "localhost/slogr/oauth/token",
+                            "refreshUrl": "localhost/slogr/token/refresh",
+                            "scopes": []
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
