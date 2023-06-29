@@ -133,12 +133,13 @@ return [
     | this array to grant expanded functionality to your applications.
     |
     */
-
+    
     'providers' => [
 
         /*
          * Laravel Framework Service Providers...
          */
+        
         Illuminate\Auth\AuthServiceProvider::class,
         Stevebauman\Location\LocationServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
@@ -162,6 +163,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -174,6 +176,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        
         App\Providers\RouteServiceProvider::class,
 
     ],

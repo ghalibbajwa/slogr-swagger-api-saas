@@ -5,6 +5,9 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Role;
+
 
 
 use Laravel\Passport\HasApiTokens; // include this
@@ -39,4 +42,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    
+    public function roles()
+    {
+        return $this->morphToMany(Role::class, 'role_users');
+    }
 }

@@ -18,6 +18,10 @@ return [
         | Route for accessing api documentation interface
         |--------------------------------------------------------------------------
         */
+        [
+            'path' => '/api/register',
+            'role' => 'admin', 
+        ],
 
         'api' => 'api/documentation',
 

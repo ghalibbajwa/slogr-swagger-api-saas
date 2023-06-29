@@ -8,14 +8,16 @@
         "/api/register": {
             "post": {
                 "tags": [
-                    "Register"
+                    "Authentication"
                 ],
-                "summary": "User Register",
-                "description": "User Register here",
-                "operationId": "Register",
+                "summary": "Register a new user",
+                "description": "Registers a new user in the system",
+                "operationId": "8e4e3cb7b46126f4696379d3c7eeb4ad",
                 "requestBody": {
+                    "description": "User data",
+                    "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "required": [
                                     "name",
@@ -25,56 +27,58 @@
                                 ],
                                 "properties": {
                                     "name": {
-                                        "type": "text"
+                                        "description": "The name of the user",
+                                        "type": "string"
                                     },
                                     "email": {
-                                        "type": "text"
+                                        "description": "The email address of the user",
+                                        "type": "string",
+                                        "format": "email"
                                     },
                                     "password": {
-                                        "type": "password"
+                                        "description": "The password of the user",
+                                        "type": "string",
+                                        "format": "password"
                                     },
                                     "password_confirmation": {
-                                        "type": "password"
+                                        "description": "The confirmation of the password",
+                                        "type": "string",
+                                        "format": "password"
                                     }
                                 },
                                 "type": "object"
                             }
-                        },
-                        "application/json": {
-                            "schema": {}
                         }
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "Register Successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
                     "200": {
-                        "description": "Register Successfully",
+                        "description": "Successful registration",
                         "content": {
                             "application/json": {
-                                "schema": {}
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "properties": {
+                                                "token": {
+                                                    "description": "The authentication token",
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "description": "The name of the user",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
                             }
                         }
                     },
                     "422": {
-                        "description": "Unprocessable Entity",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "404": {
-                        "description": "Resource Not Found"
+                        "description": "Validation error"
                     }
                 }
             }
@@ -82,14 +86,16 @@
         "/api/login": {
             "post": {
                 "tags": [
-                    "Login"
+                    "Authentication"
                 ],
-                "summary": "User Login",
-                "description": "Login User Here",
-                "operationId": "authLogin",
+                "summary": "User login",
+                "description": "Logs in a user",
+                "operationId": "222b2625838e3c57e017987f73598fda",
                 "requestBody": {
+                    "description": "User credentials",
+                    "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "required": [
                                     "email",
@@ -97,50 +103,145 @@
                                 ],
                                 "properties": {
                                     "email": {
-                                        "type": "email"
+                                        "description": "The email address of the user",
+                                        "type": "string",
+                                        "format": "email"
                                     },
                                     "password": {
-                                        "type": "password"
+                                        "description": "The password of the user",
+                                        "type": "string",
+                                        "format": "password"
                                     }
                                 },
                                 "type": "object"
                             }
-                        },
-                        "application/json": {
-                            "schema": {}
                         }
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "Login Successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
                     "200": {
-                        "description": "Login Successfully",
+                        "description": "Successful login",
                         "content": {
                             "application/json": {
-                                "schema": {}
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "properties": {
+                                                "token": {
+                                                    "description": "The authentication token",
+                                                    "type": "string"
+                                                },
+                                                "user": {
+                                                    "description": "The authenticated user's information",
+                                                    "properties": {
+                                                        "id": {
+                                                            "description": "The user's ID",
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "description": "The user's name",
+                                                            "type": "string"
+                                                        },
+                                                        "email": {
+                                                            "description": "The user's email address",
+                                                            "type": "string",
+                                                            "format": "email"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
                             }
                         }
                     },
-                    "422": {
-                        "description": "Unprocessable Entity",
+                    "401": {
+                        "description": "Unauthorised - Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/api/assign": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Assign Role",
+                "description": "Assigns role to a user",
+                "operationId": "b59745f5ea6544d52a8184fd46ba9046",
+                "requestBody": {
+                    "description": "User and Role",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "role id"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "The email address of the user",
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "role": {
+                                        "description": "role id {admin : 1, guest : 2, moderator : 3}",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Role added",
                         "content": {
                             "application/json": {
-                                "schema": {}
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "properties": {
+                                                "token": {
+                                                    "description": "The authentication token",
+                                                    "type": "string"
+                                                },
+                                                "user": {
+                                                    "description": "The authenticated user's information",
+                                                    "properties": {
+                                                        "id": {
+                                                            "description": "The user's ID",
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "description": "The user's name",
+                                                            "type": "string"
+                                                        },
+                                                        "email": {
+                                                            "description": "The user's email address",
+                                                            "type": "string",
+                                                            "format": "email"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
                             }
                         }
                     },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "404": {
-                        "description": "Resource Not Found"
+                    "401": {
+                        "description": "Unauthorised - Invalid credentials"
                     }
                 }
             }
@@ -1268,9 +1369,9 @@
                     "scheme": "https",
                     "flows": {
                         "password": {
-                            "authorizationUrl": "localhost/slogr/oauth/authorize",
-                            "tokenUrl": "localhost/slogr/oauth/token",
-                            "refreshUrl": "localhost/slogr/token/refresh",
+                            "authorizationUrl": "localhost/oauth/authorize",
+                            "tokenUrl": "localhost/oauth/token",
+                            "refreshUrl": "localhost/token/refresh",
                             "scopes": []
                         }
                     }
