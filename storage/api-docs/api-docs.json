@@ -382,6 +382,94 @@
                 }
             }
         },
+        "/api/alerts": {
+            "get": {
+                "tags": [
+                    "Alerts"
+                ],
+                "summary": "Get alerts",
+                "description": "Retrieve all alerts",
+                "operationId": "e469f99ef9523800afaf0c85ba66e660",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "alerts": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/add-alert": {
+            "post": {
+                "tags": [
+                    "Alerts"
+                ],
+                "summary": "Add an Alert",
+                "description": "Add or Edit and Alert",
+                "operationId": "25e20a970264967f3337ca9259dcdd96",
+                "requestBody": {
+                    "description": "Alert Information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "name for the alert",
+                                        "type": "string"
+                                    },
+                                    "session": {
+                                        "description": "Session id for the session to me monitored",
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "endpoint": {
+                                        "description": "endpoint on which the alert would be relayed",
+                                        "type": "string",
+                                        "example": "localhost/api/alertreciever"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "New Alert Added",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/analytics/{sid}": {
             "get": {
                 "tags": [
@@ -578,6 +666,59 @@
                                     "properties": {
                                         "error": {
                                             "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/data": {
+            "get": {
+                "tags": [
+                    "Data Downloading and Reporting"
+                ],
+                "summary": "Get data",
+                "description": "Retrieve all available data",
+                "operationId": "c1dd270e2cf8918918a1582b125b529e",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "analytics": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "sessions": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "agents": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "profiles": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "alerts": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "groups": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -912,14 +1053,14 @@
                 }
             }
         },
-        "/api/index": {
+        "/api/profiles": {
             "get": {
                 "tags": [
                     "Profiles"
                 ],
                 "summary": "Get profiles",
                 "description": "Retrieve all profiles",
-                "operationId": "edf5a886f5091d3f94118cff1f6fd8c6",
+                "operationId": "fc5ebcf9474990fa77cecda248147a60",
                 "responses": {
                     "200": {
                         "description": "Successful operation",

@@ -14,6 +14,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp;
 use App\analytics;
 use Config;
+use App\alerts;
+
 
 use Illuminate\Routing\UrlGenerator;
 
@@ -306,15 +308,12 @@ class sessionController extends Controller
 
 
             $client = new Client();
-
             $cip = str_replace('http://', '', env('APP_URL'));
-
             $ip = agents::find($session->client)->ipaddress;
             $server = agents::find($session->server)->ipaddress;
             $url = 'http://' . $ip . ':5000/exe';
             $session->server = $server;
             $session->cip = $cip;
-
             $response = $client->post($url, [
                 GuzzleHttp\RequestOptions::JSON => $session // or 'json' => [...]
             ]);
@@ -331,8 +330,8 @@ class sessionController extends Controller
     function report(Request $request)
     {
         //    return response($request->all());
+        $sla_breached = false;
         $analytics = new analytics;
-
         $analytics->session_id = (int) $request['test-name'];
         $analytics->avg_down = (float) $request['avg-downlink-time(ms)'];
         $analytics->avg_jitter = (float) $request['avg-jitter(ms)'];
@@ -352,6 +351,37 @@ class sessionController extends Controller
         $analytics->st_rtt = (float) $request['td-dev-rtt(ms)'];
         $analytics->t_packets = (int) $request['total-packets'];
         $analytics->save();
+
+        $alerts = alerts::where('session','=',$analytics->session_id)->get();
+        $session = sessions::find($analytics->session_id);
+        $profile = profiles::find($session->profile);
+
+        if($analytics->avg_rtt > $profile->max_rtt || $analytics->avg_jitter > $profile->max_jitter){
+            $sla_breached = true;
+        }
+        
+        $client = new Client();
+        foreach($alerts as $alert){
+            $url = $alert->endpoint;
+            
+            $data = [
+                'result' => $analytics ,
+                'sla_breached' => $sla_breached
+            ];
+            $jsonData = json_encode($data);
+
+            try {
+                $response = $client->post($url, [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                    ],
+                    'body' => $jsonData,
+                ]);
+            } catch (\Exception $e) {
+                continue;
+            }
+            
+        }
 
         return response("OK");
 

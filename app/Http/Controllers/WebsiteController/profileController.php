@@ -12,33 +12,33 @@ use App\profiles;
 class profileController extends Controller
 {
     /**
- * @OA\Get(
- *     path="/api/index",
- *     summary="Get profiles",
- *     description="Retrieve all profiles",
- *     tags={"Profiles"},
- *     @OA\Response(
- *         response=200,
- *         description="Successful operation",
- *         @OA\JsonContent(
- *             @OA\Property(
- *                 property="data",
- *                 type="object",
- *                 @OA\Property(
- *                     property="profiles",
- *                     type="array",
- *                     @OA\Items()
- *                 )
- *             )
- *         )
- *     )
- * )
- */
-    
+     * @OA\Get(
+     *     path="/api/profiles",
+     *     summary="Get profiles",
+     *     description="Retrieve all profiles",
+     *     tags={"Profiles"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="profiles",
+     *                     type="array",
+     *                     @OA\Items()
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
     public function index()
     {
         $profiles = profiles::all();
-        $data['profiles']=$profiles;
+        $data['profiles'] = $profiles;
         return response()->json(['data' => $data])->setStatusCode(200);
 
 
@@ -46,126 +46,126 @@ class profileController extends Controller
 
 
     /**
- * @OA\Post(
- *     path="/api/add-profile",
- *     summary="Create a profile",
- *     description="Create a new profile",
- *     tags={"Profiles"},
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             @OA\Property(
- *                 property="name",
- *                 type="string",
- *                 description="Profile name",
- *                 example="Profile 1"
- *             ),
- *             @OA\Property(
- *                 property="p_size",
- *                 type="integer",
- *                 description="Packet size",
- *                 example="1500"
- *             ),
- *             @OA\Property(
- *                 property="count",
- *                 type="integer",
- *                 description="Count",
- *                 example="10"
- *             ),
- *             @OA\Property(
- *                 property="n_packets",
- *                 type="integer",
- *                 description="Number of packets",
- *                 example="100"
- *             ),
- *             @OA\Property(
- *                 property="p_interval",
- *                 type="integer",
- *                 description="Packet interval",
- *                 example="10"
- *             ),
- *             @OA\Property(
- *                 property="w_time",
- *                 type="integer",
- *                 description="Wait time",
- *                 example="5"
- *             ),
- *             @OA\Property(
- *                 property="dscp",
- *                 type="integer",
- *                 description="DSCP",
- *                 example="46"
- *             ),
- *             @OA\Property(
- *                 property="max_loss",
- *                 type="integer",
- *                 description="Maximum loss",
- *                 example="5"
- *             ),
- *             @OA\Property(
- *                 property="max_down",
- *                 type="integer",
- *                 description="Maximum downlink time",
- *                 example="50"
- *             ),
- *             @OA\Property(
- *                 property="max_up",
- *                 type="integer",
- *                 description="Maximum uplink time",
- *                 example="50"
- *             ),
- *             @OA\Property(
- *                 property="max_jitter",
- *                 type="integer",
- *                 description="Maximum jitter",
- *                 example="10"
- *             ),
- *             @OA\Property(
- *                 property="max_rtt",
- *                 type="integer",
- *                 description="Maximum RTT",
- *                 example="100"
- *             ),
- *             @OA\Property(
- *                 property="edit",
- *                 type="boolean",
- *                 description="Edit flag",
- *                 example="false"
- *             ),
- *             @OA\Property(
- *                 property="aid",
- *                 type="integer",
- *                 description="Profile ID (required if edit flag is true)",
- *                 example="1"
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Successful operation",
- *         @OA\JsonContent(
- *             @OA\Property(
- *                 property="success",
- *                 type="object",
- *                 @OA\Property(
- *                     property="profile",
- *                 )
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=300,
- *         description="Validation error",
- *         @OA\JsonContent(
- *             @OA\Property(
- *                 property="error",
- *                 type="string",
- *                 description="Error message"
- *             )
- *         )
- *     )
- * )
- */
+     * @OA\Post(
+     *     path="/api/add-profile",
+     *     summary="Create a profile",
+     *     description="Create a new profile",
+     *     tags={"Profiles"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="name",
+     *                 type="string",
+     *                 description="Profile name",
+     *                 example="Profile 1"
+     *             ),
+     *             @OA\Property(
+     *                 property="p_size",
+     *                 type="integer",
+     *                 description="Packet size",
+     *                 example="1500"
+     *             ),
+     *             @OA\Property(
+     *                 property="count",
+     *                 type="integer",
+     *                 description="Count",
+     *                 example="10"
+     *             ),
+     *             @OA\Property(
+     *                 property="n_packets",
+     *                 type="integer",
+     *                 description="Number of packets",
+     *                 example="100"
+     *             ),
+     *             @OA\Property(
+     *                 property="p_interval",
+     *                 type="integer",
+     *                 description="Packet interval",
+     *                 example="10"
+     *             ),
+     *             @OA\Property(
+     *                 property="w_time",
+     *                 type="integer",
+     *                 description="Wait time",
+     *                 example="5"
+     *             ),
+     *             @OA\Property(
+     *                 property="dscp",
+     *                 type="integer",
+     *                 description="DSCP",
+     *                 example="46"
+     *             ),
+     *             @OA\Property(
+     *                 property="max_loss",
+     *                 type="integer",
+     *                 description="Maximum loss",
+     *                 example="5"
+     *             ),
+     *             @OA\Property(
+     *                 property="max_down",
+     *                 type="integer",
+     *                 description="Maximum downlink time",
+     *                 example="50"
+     *             ),
+     *             @OA\Property(
+     *                 property="max_up",
+     *                 type="integer",
+     *                 description="Maximum uplink time",
+     *                 example="50"
+     *             ),
+     *             @OA\Property(
+     *                 property="max_jitter",
+     *                 type="integer",
+     *                 description="Maximum jitter",
+     *                 example="10"
+     *             ),
+     *             @OA\Property(
+     *                 property="max_rtt",
+     *                 type="integer",
+     *                 description="Maximum RTT",
+     *                 example="100"
+     *             ),
+     *             @OA\Property(
+     *                 property="edit",
+     *                 type="boolean",
+     *                 description="Edit flag",
+     *                 example="false"
+     *             ),
+     *             @OA\Property(
+     *                 property="aid",
+     *                 type="integer",
+     *                 description="Profile ID (required if edit flag is true)",
+     *                 example="1"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="profile",
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=300,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 description="Error message"
+     *             )
+     *         )
+     *     )
+     * )
+     */
 
     public function store(Request $request)
     {
@@ -218,42 +218,42 @@ class profileController extends Controller
 
         $profile->save();
         $success['profile'] = $profile;
-            
+
 
         return response()->json(['success' => $success])->setStatusCode(200);
     }
 
 
     /**
- * @OA\Post(
- *     path="/api/delete-profile",
- *     summary="Delete a profile",
- *     description="Delete a profile by ID",
- *     tags={"Profiles"},
- *     @OA\RequestBody(
- *         required=true,
- *         description="Profile ID",
- *         @OA\JsonContent(
- *             @OA\Property(
- *                 property="delete",
- *                 type="integer",
- *                 description="ID of the profile to be deleted"
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Success",
- *         @OA\JsonContent(
- *             @OA\Property(
- *                 property="status",
- *                 type="string",
- *                 description="Status of the deletion operation"
- *             )
- *         )
- *     )
- * )
- */
+     * @OA\Post(
+     *     path="/api/delete-profile",
+     *     summary="Delete a profile",
+     *     description="Delete a profile by ID",
+     *     tags={"Profiles"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Profile ID",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="delete",
+     *                 type="integer",
+     *                 description="ID of the profile to be deleted"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 description="Status of the deletion operation"
+     *             )
+     *         )
+     *     )
+     * )
+     */
 
     public function delete(Request $request)
     {

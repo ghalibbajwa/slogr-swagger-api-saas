@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\WebsiteController\alertController;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\schedular\schedularController;
@@ -60,6 +61,8 @@ Route::middleware('auth:api')->group(function () {
 
 
         Route::get('/agents', [agentController::class, 'index']);
+        Route::get('/alerts', [alertController::class, 'index']);
+
         // Route::get('/down/{id}',  [agentController::class, 'getDownload']);
         Route::get('/sessions', [sessionController::class, 'index']);
         Route::get('/profiles', [profileController::class, 'index']);
@@ -78,6 +81,8 @@ Route::middleware('auth:api')->group(function () {
         Route::post('edit-agent', [agentController::class, 'store']);
         Route::post('add-session', [sessionController::class, 'store']);
         Route::post('add-profile', [profileController::class, 'store']);
+        Route::post('add-alert', [alertController::class, 'store']);
+
 
 
         Route::post('delete-agent', [agentController::class, 'delete']);
