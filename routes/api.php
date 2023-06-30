@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\WebsiteController\alertController;
+use App\Http\Controllers\WebsiteController\dataController;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\schedular\schedularController;
@@ -62,6 +63,7 @@ Route::middleware('auth:api')->group(function () {
 
         Route::get('/agents', [agentController::class, 'index']);
         Route::get('/alerts', [alertController::class, 'index']);
+        Route::get('/data', [dataController::class, 'index']);
 
         // Route::get('/down/{id}',  [agentController::class, 'getDownload']);
         Route::get('/sessions', [sessionController::class, 'index']);
