@@ -15,6 +15,7 @@
         "laravel/framework": "^6.0",
         "laravel/passport": "^9.4",
         "laravel/tinker": "^1.0",
+        "php-amqplib/php-amqplib": "^2.8",
         "spatie/laravel-permission": "*",
         "stevebauman/location": "^6.6"
     },

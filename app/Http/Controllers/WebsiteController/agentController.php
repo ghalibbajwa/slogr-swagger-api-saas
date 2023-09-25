@@ -9,6 +9,8 @@ use App\agents;
 use Illuminate\Support\Facades\Response;
 use Validator;
 use App\asn_table;
+use App\Services\RabbitMQService;
+
 
 
 class agentController extends Controller
@@ -44,6 +46,23 @@ class agentController extends Controller
 
 
     }
+
+
+    public function generatescript($id){
+        $agent = agents::find($id);
+        
+    }
+
+
+
+    public function mqtest()
+    {
+        $producer = new RabbitMQService;
+        $mesage = "35.229.251.91,8009,20,50,2000,0,192.168.100.52,50,test,./";
+        $producer->publish($mesage,"agent1");
+    }
+
+
 
 
     public function getDownload($id)

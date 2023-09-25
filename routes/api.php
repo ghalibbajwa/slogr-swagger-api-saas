@@ -38,9 +38,8 @@ Route::group(['middleware' => 'web'], function () {
 
 
 Route::post('/login', 'Api\AuthController@login');
-
-
-
+Route::get('/mq', [agentController::class, 'mqtest']);
+Route::get('/mq2', [agentController::class, 'consume']);
 
 
 
