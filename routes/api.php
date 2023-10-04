@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\WebsiteController\alertController;
 use App\Http\Controllers\WebsiteController\dataController;
 use Illuminate\Http\Request;
@@ -43,23 +44,23 @@ Route::get('/mq2', [agentController::class, 'consume']);
 
 
 
-Route::middleware('auth:api')->group(function () {
+
+Route::group(['middleware' => ['auth:api']] ,function () {
     if (Auth::check()) {
-
-
+     
+    //    dd(Auth::user());
         if (Auth::user()->roles->pluck('name')->toArray()[0] == "admin") {
 
-            Route::post('register', 'Api\AuthController@register');
-
+            Route::post('/register', [AuthController::class, 'register']);
             Route::post('assign', 'Api\AuthController@assign');
 
 
         } 
-        if (Auth::user()->roles->pluck('name')->toArray()[0] == "guest") {
-            Route::get('/groups', [groupControlller::class, 'index']);
-        }
+        // if (Auth::user()->roles->pluck('name')->toArray()[0] == "guest") {
+            
+        // }
 
-
+        Route::get('/groups', [groupControlller::class, 'index']);
         Route::get('/agents', [agentController::class, 'index']);
         Route::get('/alerts', [alertController::class, 'index']);
         Route::get('/data', [dataController::class, 'index']);
@@ -79,7 +80,8 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/getip', function () {
             return response(url(''));
         });
-        Route::post('edit-agent', [agentController::class, 'store']);
+        Route::post('add-agent', [agentController::class, 'add_agent']);
+        Route::post('edit-agent', [agentController::class, 'edit_agent']);
         Route::post('add-session', [sessionController::class, 'store']);
         Route::post('add-profile', [profileController::class, 'store']);
         Route::post('add-alert', [alertController::class, 'store']);
@@ -105,4 +107,5 @@ Route::middleware('auth:api')->group(function () {
         return response()->json(['Unauthorized' => "Login"])->setStatusCode(419);
 
     }
+    
 });

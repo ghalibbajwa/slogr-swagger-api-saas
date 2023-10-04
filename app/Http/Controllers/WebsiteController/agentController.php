@@ -48,9 +48,10 @@ class agentController extends Controller
     }
 
 
-    public function generatescript($id){
+    public function generatescript($id)
+    {
         $agent = agents::find($id);
-        
+
     }
 
 
@@ -59,7 +60,7 @@ class agentController extends Controller
     {
         $producer = new RabbitMQService;
         $mesage = "35.229.251.91,8009,20,50,2000,0,192.168.100.52,50,test,./";
-        $producer->publish($mesage,"agent1");
+        $producer->publish($mesage, "agent1");
     }
 
 
@@ -163,13 +164,12 @@ class agentController extends Controller
      * )
      */
 
-    public function store(Request $request)
+    public function edit_agent(Request $request)
     {
         try {
 
             $validator = Validator::make($request->all(), [
-                'edit' => 'required|boolean',
-                'ip' => 'required|ip',
+
                 'name' => 'required|max:255',
             ]);
 
@@ -183,27 +183,25 @@ class agentController extends Controller
             }
 
 
-            if ($request->edit == true) {
-                $agent = agents::find($request->aid);
+
+            $agent = agents::find($request->aid);
+
+
+            if ($agent) {
+                $agent->name = $request->name;
+
+                $agent->save();
+                $success['status'] = 'Agent Saved';
+                $success['agent'] = $agent;
+
+
+                return response()->json(['success' => $success])->setStatusCode(200);
+
             } else {
+                return response()->json(['error' => "Agent not found"])->setStatusCode(400);
 
-                $agent = new agents;
             }
-            $agent->name = $request->name;
-            $agent->ipaddress = $request->ip;
 
-
-
-
-
-
-
-            $agent->save();
-            $success['status'] = 'Agent Saved';
-            $success['agent'] = $agent;
-
-
-            return response()->json(['success' => $success])->setStatusCode(200);
 
         } catch (\Exception $e) {
             return $e;
@@ -246,9 +244,15 @@ class agentController extends Controller
     {
 
         $agent = agents::find($request->delete);
-        $agent->delete();
 
-        return response()->json(['success' => "agent deleted"])->setStatusCode(200);
+        if ($agent) {
+            $agent->delete();
+
+            return response()->json(['success' => "agent deleted"])->setStatusCode(200);
+        } else {
+            return response()->json(['error' => "Agent not found"])->setStatusCode(400);
+
+        }
 
     }
 
@@ -269,6 +273,53 @@ class agentController extends Controller
             }
         }
         dd($ans);
+
+    }
+
+
+    public function add_agent(Request $request)
+    {
+
+
+
+
+        $validator = Validator::make($request->all(), [
+
+            'name' => 'required|max:255',
+        ]);
+
+
+
+        // dd($validator->fails()); 
+
+        if ($validator->fails()) {
+
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
+        }
+
+        $agent = new agents;
+
+        $agent->name = $request->name;
+        $agent->ipaddress = "192.168.1.123";
+        $agent->platform = "Linux";
+        $agent->lat = "12312";
+        $agent->long = "4534";
+        $agent->location = "Karachi";
+        $agent->machine_name = "Machine Name";
+        $agent->arch = "X64";
+        $agent->processor = "Intel";
+        $agent->machine = "MAchine";
+
+
+
+        $agent->save();
+
+        $data = [
+            "script" => "installationscript",
+            "agent" => $agent->all()
+        ];
+        return response($data);
+
 
     }
 

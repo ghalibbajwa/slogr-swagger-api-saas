@@ -219,6 +219,11 @@ class sessionController extends Controller
 
         if ($request->edit == true) {
             $session = sessions::find($request->aid);
+            if ($session) {
+
+            } else {
+                return response()->json(['error' => "Session not found"])->setStatusCode(400);
+            }
         } else {
 
             $session = new sessions;
@@ -292,10 +297,16 @@ class sessionController extends Controller
 
 
 
-        $agent = sessions::find($request->delete);
-        $agent->delete();
-        return redirect()->back()->with('a_status', 'success');
+        $session = sessions::find($request->delete);
 
+        if ($session) {
+
+            $session->delete();
+            return redirect()->back()->with('a_status', 'success');
+
+        } else {
+            return response()->json(['error' => "Session not found"])->setStatusCode(400);
+        }
 
     }
 
@@ -352,20 +363,20 @@ class sessionController extends Controller
         $analytics->t_packets = (int) $request['total-packets'];
         $analytics->save();
 
-        $alerts = alerts::where('session','=',$analytics->session_id)->get();
+        $alerts = alerts::where('session', '=', $analytics->session_id)->get();
         $session = sessions::find($analytics->session_id);
         $profile = profiles::find($session->profile);
 
-        if($analytics->avg_rtt > $profile->max_rtt || $analytics->avg_jitter > $profile->max_jitter){
+        if ($analytics->avg_rtt > $profile->max_rtt || $analytics->avg_jitter > $profile->max_jitter) {
             $sla_breached = true;
         }
-        
+
         $client = new Client();
-        foreach($alerts as $alert){
+        foreach ($alerts as $alert) {
             $url = $alert->endpoint;
-            
+
             $data = [
-                'result' => $analytics ,
+                'result' => $analytics,
                 'sla_breached' => $sla_breached
             ];
             $jsonData = json_encode($data);
@@ -380,7 +391,7 @@ class sessionController extends Controller
             } catch (\Exception $e) {
                 continue;
             }
-            
+
         }
 
         return response("OK");
