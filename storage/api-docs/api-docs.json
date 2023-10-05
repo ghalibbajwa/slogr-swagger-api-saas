@@ -288,7 +288,7 @@
                 ],
                 "summary": "Edit agent",
                 "description": "update an existing agent",
-                "operationId": "a49818bac4cce192656aa33bbff354c1",
+                "operationId": "436f28bac109c9c6a4c4c3970d52d09c",
                 "requestBody": {
                     "required": true,
                     "content": {

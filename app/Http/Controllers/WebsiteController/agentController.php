@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\agents;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Str;
 use Validator;
 use App\asn_table;
 use App\Services\RabbitMQService;
@@ -38,10 +39,79 @@ class agentController extends Controller
      *     )
      * )
      */
-    public function index()
+
+    public function index(Request $request)
     {
+
+        $page=1;
+        $size=10;
+        if($request->page){
+            $page=$request->page;
+        }
+        if($request->size){
+            $size=$request->size;
+        }
+
+        
+
+        $next = $page + 1;
+        $prev = null;
+        if ($page != 1) {
+            $prev = $page - 1;
+        }
         $agents = agents::all();
-        $data['agents'] = $agents;
+
+        if($request->name){
+            $name=$request->name;
+            $filteredAgents = $agents->filter(function ($agent) use ($name) {
+                return Str::contains($agent->name, $name);
+            });
+            $agents=$filteredAgents;
+        }
+
+        if($request->city){
+            $city=$request->city;
+            $filteredAgents = $agents->filter(function ($agent) use ($city) {
+                return Str::contains($agent->location, $city);
+            });
+            $agents=$filteredAgents;
+        }
+
+
+
+        if ($request->ipaddress) {
+            $ipaddress= $request->ipaddress;
+            $ips = explode('-', $ipaddress);
+
+            $agentsBetweenIPs = [];
+
+            foreach ($agents as $agent) {
+                $agentIpAddress = $agent->ipaddress;
+
+                // Convert IP addresses to numerical representations for comparison
+                $startIpNumeric = ip2long($ips[0]);
+                $endIpNumeric = ip2long($ips[1]);
+                $agentIpNumeric = ip2long($agentIpAddress);
+
+                if ($agentIpNumeric >= $startIpNumeric && $agentIpNumeric <= $endIpNumeric) {
+                    $agentsBetweenIPs[] = $agent;
+                }
+            }
+            $agentsArray = $agentsBetweenIPs;
+        } else {
+            $agentsArray = $agents->toArray();
+        }
+        
+        $offset = ($page - 1) * $size;
+        $agentsForPage = array_slice($agentsArray, $offset, $size);
+
+
+        $data['count'] = count($agentsArray);
+        $data['next'] = $next;
+        $data['prev'] = $prev;
+        $data['page-size'] = $size;
+        $data['agents'] = $agentsForPage;
+
         return response()->json(['data' => $data])->setStatusCode(200);
 
 
