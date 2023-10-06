@@ -43,16 +43,16 @@ class agentController extends Controller
     public function index(Request $request)
     {
 
-        $page=1;
-        $size=10;
-        if($request->page){
-            $page=$request->page;
+        $page = 1;
+        $size = 10;
+        if ($request->page) {
+            $page = $request->page;
         }
-        if($request->size){
-            $size=$request->size;
+        if ($request->size) {
+            $size = $request->size;
         }
 
-        
+
 
         $next = $page + 1;
         $prev = null;
@@ -61,26 +61,44 @@ class agentController extends Controller
         }
         $agents = agents::all();
 
-        if($request->name){
-            $name=$request->name;
+        if ($request->name) {
+            $name = $request->name;
             $filteredAgents = $agents->filter(function ($agent) use ($name) {
                 return Str::contains($agent->name, $name);
             });
-            $agents=$filteredAgents;
+            $agents = $filteredAgents;
         }
 
-        if($request->city){
-            $city=$request->city;
+
+        if ($request->country) {
+            $country = $request->country;
+            $filteredAgents = $agents->filter(function ($agent) use ($country) {
+                return Str::contains($agent->Country, $country);
+            });
+            $agents = $filteredAgents;
+            
+        }
+
+        if ($request->organization) {
+            $organization = $request->organization;
+            $filteredAgents = $agents->filter(function ($agent) use ($organization) {
+                return Str::contains($agent->Organization, $organization);
+            });
+            $agents = $filteredAgents;
+        }
+
+        if ($request->city) {
+            $city = $request->city;
             $filteredAgents = $agents->filter(function ($agent) use ($city) {
                 return Str::contains($agent->location, $city);
             });
-            $agents=$filteredAgents;
+            $agents = $filteredAgents;
         }
 
 
 
         if ($request->ipaddress) {
-            $ipaddress= $request->ipaddress;
+            $ipaddress = $request->ipaddress;
             $ips = explode('-', $ipaddress);
 
             $agentsBetweenIPs = [];
@@ -101,7 +119,7 @@ class agentController extends Controller
         } else {
             $agentsArray = $agents->toArray();
         }
-        
+
         $offset = ($page - 1) * $size;
         $agentsForPage = array_slice($agentsArray, $offset, $size);
 
@@ -379,6 +397,8 @@ class agentController extends Controller
         $agent->arch = "X64";
         $agent->processor = "Intel";
         $agent->machine = "MAchine";
+        $agent->Country = "Pakistan";
+        $agent->Organization = "Slogr";
 
 
 
@@ -386,7 +406,7 @@ class agentController extends Controller
 
         $data = [
             "script" => "installationscript",
-            "agent" => $agent->all()
+            "agent" => $agent
         ];
         return response($data);
 
