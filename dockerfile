@@ -3,10 +3,23 @@ FROM php:7.4-apache
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql
+    && docker-php-ext-install pdo pdo_pgsql 
+
+RUN a2enmod headers
+RUN echo '<IfModule mod_headers.c>\n' \
+    '    Header set Access-Control-Allow-Origin "*"\n' \
+    '    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"\n' \
+    '    Header set Access-Control-Allow-Headers "Authorization, Content-Type, X-Requested-With"\n' \
+    '    Header set Access-Control-Max-Age "3600"\n' \
+    '</IfModule>' > /etc/apache2/conf-available/cors.conf
+
+
+RUN a2enconf cors
+
 
 RUN  apt-get -y install cron
 
+RUN a2enmod rewrite
 
 RUN usermod -u 1000 www-data
 # Copy files to container

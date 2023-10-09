@@ -2,9 +2,9 @@ version: "2"
 
 services:
   app:
-    image: ghalibbajwa/slogr-controller-laravel:v2
+    image: 95ead854fc71
     ports:
-      - "80:80"
+      - "8080:80"
     depends_on:
       - db
     env_file:
@@ -19,7 +19,7 @@ services:
       POSTGRES_PASSWORD: root
 
   migrate:
-    image: ghalibbajwa/slogr-controller-laravel:v2
+    image: f4b8953c497d
     depends_on:
       - db
     environment:
@@ -29,7 +29,7 @@ services:
       - DB_DATABASE=laravel
       - DB_USERNAME=postgres
       - DB_PASSWORD=root
-    command: sh -c 'php artisan migrate ; php artisan db:seed --class=ProfilesTableSeeder ; php artisan import:csv  ; php artisan view:clear'
+    command: sh -c 'php artisan migrate ; php artisan db:seed --class=ProfilesTableSeeder ; php artisan import:csv  ; php artisan view:clear; php artisan passport:install'
 
 volumes:
   db_data:
