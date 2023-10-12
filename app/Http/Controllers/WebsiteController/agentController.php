@@ -59,7 +59,7 @@ class agentController extends Controller
         if ($page != 1) {
             $prev = $page - 1;
         }
-        $agents = agents::all();
+        $agents = agents::orderBy('created_at', 'desc')->get();
 
         if ($request->name) {
             $name = $request->name;
