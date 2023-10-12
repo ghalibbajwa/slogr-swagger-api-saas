@@ -26,7 +26,7 @@ class CreateAgentsTable extends Migration
             $table->string('machine');
             $table->string('platform');
             $table->string('Country');
-            $table->string('Organziation');
+            $table->string('Organization');
             $table->timestamps();
         });
     }
