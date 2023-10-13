@@ -183,4 +183,47 @@ class homeController extends Controller
         return response()->json(['data' => $data])->setStatusCode(200);
 
     }
+
+    function getCluster(){
+        $agents=agents::all();
+        
+
+        $featureCollection = [
+            "type" => "FeatureCollection",
+            "crs" => [
+                "type" => "name",
+                "properties" => [
+                    "name" => "urn:ogc:def:crs:OGC:1.3:CRS84",
+                ],
+            ],
+            "features" => [],
+        ];
+        
+        // Iterate through your data and add it to the features array
+        foreach ($agents as $item) {
+            $feature = [
+                "type" => "Feature",
+                "properties" => [
+                    "id" => $item['id'],
+                    "name" => $item['name'],
+                    "ipaddress" => $item['ipaddress'],
+                    "location" => $item['location'],
+                    "platform" => $item['platform'],
+                    "organization" => $item['Organization']
+                    
+                    // Add more properties here based on your data
+                ],
+                "geometry" => [
+                    "type" => "Point",
+                    "coordinates" => [$item['lat'], $item['long']],
+                ],
+            ];
+            
+            $featureCollection['features'][] = $feature;
+        }
+        
+        
+        return response()->json($featureCollection)->setStatusCode(200);
+
+    }
 }

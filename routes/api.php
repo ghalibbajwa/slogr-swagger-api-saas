@@ -44,7 +44,6 @@ Route::get('/mq2', [agentController::class, 'consume']);
 
 
 
-
 Route::group(['middleware' => ['auth:api']] ,function () {
   
      
@@ -59,9 +58,10 @@ Route::group(['middleware' => ['auth:api']] ,function () {
         // if (Auth::user()->roles->pluck('name')->toArray()[0] == "guest") {
             
         // }
-
+       
         Route::get('/groups', [groupControlller::class, 'index']);
         Route::get('/agents', [agentController::class, 'index']);
+        Route::get('/cluster', [homeController::class, 'getCluster']);
         Route::get('/alerts', [alertController::class, 'index']);
         Route::get('/data', [dataController::class, 'index']);
 
