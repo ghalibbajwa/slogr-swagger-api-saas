@@ -1,0 +1,27 @@
+name: deployslogr
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+
+  testaction:
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # - uses: actions/checkout@v2
+
+      - id: laravel
+        uses: mickeygoussetorg/trigger-jenkins-job@v1
+        with:
+          jenkins-server:  "http://34.97.53.207:8080/" # URL of the jenkins server
+          jenkins-job: "laravel" # The name of the jenkins job to run
+          jenkins-username: admin # user name for accessing jenkins
+          jenkins-pat: Gk91J.cB # personal Access token for accessing Jenkins
+          poll-time: 10 # how often to poll the jenkins server for results
+          timeout-value: 600 # How long to poll before timing out the action
+          verbose: true # true/false - turns on extra logging
+      
