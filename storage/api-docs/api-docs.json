@@ -1510,9 +1510,9 @@
                     "scheme": "https",
                     "flows": {
                         "password": {
-                            "authorizationUrl": "http://localhost/oauth/authorize",
-                            "tokenUrl": "http://localhost/oauth/token",
-                            "refreshUrl": "http://localhost/token/refresh",
+                            "authorizationUrl": "http://localhost/slog_v2/oauth/authorize",
+                            "tokenUrl": "http://localhost/slog_v2/oauth/token",
+                            "refreshUrl": "http://localhost/slog_v2/token/refresh",
                             "scopes": []
                         }
                     }

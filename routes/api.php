@@ -46,16 +46,16 @@ Route::get('/mq2', [agentController::class, 'consume']);
 
 
 Route::group(['middleware' => ['auth:api']] ,function () {
-    if (Auth::check()) {
+  
      
     //    dd(Auth::user());
-        if (Auth::user()->roles->pluck('name')->toArray()[0] == "admin") {
+        // if (Auth::user()->roles->pluck('name')->toArray()[0] == "admin") {
 
             Route::post('/register', [AuthController::class, 'register']);
             Route::post('assign', 'Api\AuthController@assign');
 
 
-        } 
+        // } 
         // if (Auth::user()->roles->pluck('name')->toArray()[0] == "guest") {
             
         // }
@@ -103,9 +103,7 @@ Route::group(['middleware' => ['auth:api']] ,function () {
         Route::get('/sch', [schedularController::class, 'schedule']);
 
 
-    } else {
-        return response()->json(['Unauthorized' => "Login"])->setStatusCode(419);
-
-    }
+   
     
 });
+
