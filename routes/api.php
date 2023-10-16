@@ -67,10 +67,11 @@ Route::group(['middleware' => ['auth:api']] ,function () {
 
         // Route::get('/down/{id}',  [agentController::class, 'getDownload']);
         Route::get('/sessions', [sessionController::class, 'index']);
+        Route::get('/getsession', [sessionController::class, 'sessiondetail']);
         Route::get('/profiles', [profileController::class, 'index']);
         Route::get('/push/{id}', [profileController::class, 'push']);
         Route::get('/ip', [agentController::class, 'get_ip']);
-        Route::get('/analytics/{session}', [analyticController::class, 'index']);
+        Route::get('/analytics', [analyticController::class, 'index']);
         Route::get('/map', [homeController::class, 'index']);
         Route::get('/agentdata/{id}/{profile}', [analyticController::class, 'agentdata']);
         Route::get('/agentlogs/{id}', [analyticController::class, 'agentlogs']);
@@ -81,6 +82,7 @@ Route::group(['middleware' => ['auth:api']] ,function () {
             return response(url(''));
         });
         Route::post('add-agent', [agentController::class, 'add_agent']);
+        Route::get('/get-ref-sessions', [agentController::class, 'referenceSessions']);
         Route::post('edit-agent', [agentController::class, 'edit_agent']);
         Route::post('add-session', [sessionController::class, 'store']);
         Route::post('add-profile', [profileController::class, 'store']);

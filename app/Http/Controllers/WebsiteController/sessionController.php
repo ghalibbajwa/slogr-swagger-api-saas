@@ -398,4 +398,19 @@ class sessionController extends Controller
 
 
     }
+
+
+
+    public function sessiondetail(Request $request){
+
+        $session = sessions::find($request->sid);
+        $client = agents::find($session->client);
+        $server = agents::find($session->server);
+
+        $data['client'] = $client;
+        $data['server'] = $server;
+
+        return response()->json(['data' => $data])->setStatusCode(200);
+        
+    }
 }

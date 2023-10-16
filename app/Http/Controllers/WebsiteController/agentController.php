@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Validator;
 use App\asn_table;
 use App\Services\RabbitMQService;
+use App\sessions;
 
 
 
@@ -448,5 +449,11 @@ class agentController extends Controller
 
         return response($request->all());
 
+    }
+
+
+    public function referenceSessions(Request $request){
+        $sessions = sessions::where('server','=',$request->aid) ->select('c_name', 'id')->get();
+        return response()->json(['sessions' => $sessions])->setStatusCode(200);
     }
 }
