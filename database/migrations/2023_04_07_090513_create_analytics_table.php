@@ -15,7 +15,7 @@ class CreateAnalyticsTable extends Migration
     {
         Schema::create('analytics', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('session_id');
+            $table->integer('session_id')->index();
             $table->float('avg_down');
             $table->float('avg_jitter');
             $table->float('avg_up');

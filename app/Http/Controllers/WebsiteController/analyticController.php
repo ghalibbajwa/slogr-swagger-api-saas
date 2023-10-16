@@ -93,17 +93,22 @@ class analyticController extends Controller
             $prev = $page - 1;
         }
 
-        $analytic = analytics::orderBy('session_id','desc')->where('session_id', $request->sid)->paginate($size, ['*'], 'page', $page);
+        $analytic = analytics::where('session_id', '=', $request->sid)->orderBy('created_at', 'desc')->get();
+       
+        $analytic = $analytic->toArray();
+        
+        $offset = ($page - 1) * $size;
+        $analyticsforpage = array_slice($analytic, $offset, $size);
 
 
         $data['count'] = count($analytic);
         $data['next'] = $next;
         $data['prev'] = $prev;
         $data['page-size'] = $size;
-        $data['analytics'] = $analytic;
+        $data['analytics'] = $analyticsforpage;
 
         return response()->json(['data' => $data])->setStatusCode(200);
-
+        
 
     }
 
