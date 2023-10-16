@@ -215,7 +215,7 @@ class homeController extends Controller
                 ],
                 "geometry" => [
                     "type" => "Point",
-                    "coordinates" => [$item['lat'], $item['long']],
+                    "coordinates" => [$item['long'], $item['lat']],
                 ],
             ];
             
