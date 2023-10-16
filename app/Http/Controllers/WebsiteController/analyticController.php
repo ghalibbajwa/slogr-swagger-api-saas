@@ -93,7 +93,7 @@ class analyticController extends Controller
             $prev = $page - 1;
         }
 
-        $analytic = analytics::where('session_id', '=', $request->sid)->orderBy('created_at', 'desc')->get();
+        $analytic = analytics::where('session_id', '=', $request->sid)->get();
        
         $analytic = $analytic->toArray();
         
