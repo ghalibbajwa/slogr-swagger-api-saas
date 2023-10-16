@@ -259,6 +259,7 @@ class agentController extends Controller
             $validator = Validator::make($request->all(), [
 
                 'name' => 'required|max:255',
+                'aid' => 'required|numeric',
             ]);
 
 

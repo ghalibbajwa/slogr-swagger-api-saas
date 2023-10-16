@@ -1,0 +1,158 @@
+<?php
+
+namespace App\Http\Controllers\WebsiteController;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Organization;
+use Validator;
+use App\User;
+
+class organizationController extends Controller
+{
+    public function index()
+    {
+        $organizations = Organization::all();
+        $data['organizations'] = $organizations;
+        return response()->json(['data' => $data])->setStatusCode(200);
+    }
+
+    public function store(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'address' => 'required|string',
+            'phone' => 'required|string',
+
+        ]);
+
+        if ($validator->fails()) {
+
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
+        }
+
+
+
+
+        $organizations = new Organization;
+
+        $organizations->name = $request->name;
+        $organizations->address = $request->address;
+        $organizations->phone = $request->phone;
+
+
+
+
+
+        $organizations->save();
+        $success['organizations'] = $organizations;
+
+
+        return response()->json(['success' => $success])->setStatusCode(200);
+
+    }
+
+
+
+    public function assign(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'uid' => 'required|numeric',
+            'oid' => 'required|numeric',
+        ]);
+        if ($validator->fails()) {
+
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
+        }
+
+
+
+
+
+        $user = User::find($request->uid);
+        $organization = Organization::find($request->oid);
+
+        if (!$user) {
+            return response()->json(['error' => "User not found"])->setStatusCode(400);
+        }
+        if (!$organization) {
+            return response()->json(['error' => "Organization not found"])->setStatusCode(400);
+        }
+
+        $user->organization_id = $organization->id;
+        $user->save();
+
+
+
+        $data = [
+            'message' => $user->name . " added to " . $organization->name,
+            'User' => $user
+        ];
+        return response()->json($data)->setStatusCode(200);
+        ;
+
+
+    }
+
+
+    public function delete(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'oid' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
+        }
+
+
+
+
+        $organization = Organization::find($request->oid);
+        if ($organization) {
+            $organization->delete();
+
+            return response()->json(['success' => "Organization deleted"])->setStatusCode(200);
+        } else {
+            return response()->json(['error' => "Organization not found"])->setStatusCode(400);
+
+        }
+
+
+
+    }
+
+
+    public function edit(Request $request)
+    {
+        
+        $organization = Organization::find(auth()->user()->organization_id);
+        if ($organization) {
+            if($request->name){
+                $organization->name = $request->name;
+            }
+            if($request->address){
+                $organization->address = $request->address;
+            }
+            if($request->phone){
+                $organization->phone = $request->phone;
+            }
+
+
+
+            $organization->save();
+            $success['organization'] = $organization;
+
+
+            return response()->json(['success' => $success])->setStatusCode(200);
+        } else {
+            return response()->json(['error' => "Organization not found"])->setStatusCode(400);
+        }
+
+
+
+    }
+}

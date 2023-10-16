@@ -16,24 +16,6 @@ class ProfilesTableSeeder extends Seeder
     {
 
 
-
-
-        Role::Create([
-            'name' => 'admin'
-        ]);
-        Role::Create([
-            'name' => 'guest'
-        ]);
-        Role::Create([
-            'name' => 'moderator'
-        ]);
-
-        $user = User::create([
-            'name' => 'admin',
-            'email' => 'admin@slogr.io',
-            'password' => Hash::make('password'),
-        ]);
-
         profiles::create([
             'name' => 'voip',
             'count' => 1,
@@ -92,10 +74,6 @@ class ProfilesTableSeeder extends Seeder
         ]);
 
 
-        $role = Role::find(1);
-
-
-        $user->roles()->attach($role);
-
+      
     }
 }
