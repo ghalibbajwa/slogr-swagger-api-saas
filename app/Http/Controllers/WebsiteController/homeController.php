@@ -184,6 +184,31 @@ class homeController extends Controller
 
     }
 
+
+    function getLinks(){
+        $sessions = sessions::all();
+        $agents = agents::all();
+        $agents = collect($agents)->pluck(null, 'id')->all();
+
+
+        $links = array();
+        $count = 0;
+        foreach ($sessions as $se) {
+            $server = $agents[$se->server];
+            $client = $agents[$se->client];
+            $links[$count] = [
+                'coordinates' =>[ [ floatval($server->lat), floatval($server->long)],[ floatval($client->lat), floatval($client->long)]],
+                'color' => 'blue',
+                'session_id' => $se->id
+            ];
+
+            $count += 1;
+        }
+
+
+       return  response()->json($links);
+    }
+
     function getCluster(){
         $agents=agents::all();
         
