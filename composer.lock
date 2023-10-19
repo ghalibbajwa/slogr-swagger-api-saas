@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "abbefd3cece02544863908d3ebb2b046",
+    "content-hash": "6618a553f95b8880131ea540db63cdaa",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -4012,28 +4012,28 @@
         },
         {
             "name": "stevebauman/location",
-            "version": "v6.6.2",
+            "version": "v6.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stevebauman/location.git",
-                "reference": "49f28e58daa0382bdc571b20f27b3c57c8691f1c"
+                "reference": "d6ff3d91039d4bdd4a60102537dd7e4d1b84dca0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stevebauman/location/zipball/49f28e58daa0382bdc571b20f27b3c57c8691f1c",
-                "reference": "49f28e58daa0382bdc571b20f27b3c57c8691f1c",
+                "url": "https://api.github.com/repos/stevebauman/location/zipball/d6ff3d91039d4bdd4a60102537dd7e4d1b84dca0",
+                "reference": "d6ff3d91039d4bdd4a60102537dd7e4d1b84dca0",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "ext-json": "*",
                 "geoip2/geoip2": "^2.0",
-                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0",
                 "php": ">=7.3"
             },
             "require-dev": {
                 "mockery/mockery": "~0.9|^1.0",
-                "orchestra/testbench": "~3.2|~4.0|^6.0|^7.0|^8.0",
+                "orchestra/testbench": "~3.2|~4.0|^6.0|^7.0",
                 "pestphp/pest": "^1.21"
             },
             "type": "library",
@@ -4074,9 +4074,9 @@
             ],
             "support": {
                 "issues": "https://github.com/stevebauman/location/issues",
-                "source": "https://github.com/stevebauman/location/tree/v6.6.2"
+                "source": "https://github.com/stevebauman/location/tree/v6.6.0"
             },
-            "time": "2023-02-27T14:26:23+00:00"
+            "time": "2023-02-08T16:20:35+00:00"
         },
         {
             "name": "swagger-api/swagger-ui",
