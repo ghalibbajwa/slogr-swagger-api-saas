@@ -185,7 +185,8 @@ class homeController extends Controller
     }
 
 
-    function getLinks(){
+    function getLinks()
+    {
         $sessions = sessions::all();
         $agents = agents::all();
         $agents = collect($agents)->pluck(null, 'id')->all();
@@ -194,24 +195,29 @@ class homeController extends Controller
         $links = array();
         $count = 0;
         foreach ($sessions as $se) {
-            $server = $agents[$se->server];
-            $client = $agents[$se->client];
-            $links[$count] = [
-                'coordinates' =>[ [ floatval($server->lat), floatval($server->long)],[ floatval($client->lat), floatval($client->long)]],
-                'color' => 'blue',
-                'session_id' => $se->id
-            ];
+            try {
+                $server = $agents[$se->server];
+                $client = $agents[$se->client];
+                $links[$count] = [
+                    'coordinates' => [[floatval($server->lat), floatval($server->long)], [floatval($client->lat), floatval($client->long)]],
+                    'color' => 'blue',
+                    'session_id' => $se->id
+                ];
 
-            $count += 1;
+                $count += 1;
+            } catch (\Exception $e) {
+                continue;
+            }
         }
 
 
-       return  response()->json($links);
+        return response()->json($links);
     }
 
-    function getCluster(){
-        $agents=agents::all();
-        
+    function getCluster()
+    {
+        $agents = agents::all();
+
 
         $featureCollection = [
             "type" => "FeatureCollection",
@@ -223,7 +229,7 @@ class homeController extends Controller
             ],
             "features" => [],
         ];
-        
+
         // Iterate through your data and add it to the features array
         foreach ($agents as $item) {
             $feature = [
@@ -235,7 +241,7 @@ class homeController extends Controller
                     "location" => $item['location'],
                     "platform" => $item['platform'],
                     "organization" => $item['Organization']
-                    
+
                     // Add more properties here based on your data
                 ],
                 "geometry" => [
@@ -243,11 +249,11 @@ class homeController extends Controller
                     "coordinates" => [$item['long'], $item['lat']],
                 ],
             ];
-            
+
             $featureCollection['features'][] = $feature;
         }
-        
-        
+
+
         return response()->json($featureCollection)->setStatusCode(200);
 
     }
