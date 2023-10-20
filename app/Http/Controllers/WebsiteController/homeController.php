@@ -199,7 +199,7 @@ class homeController extends Controller
                 $server = $agents[$se->server];
                 $client = $agents[$se->client];
                 $links[$count] = [
-                    'coordinates' => [[floatval($server->lat), floatval($server->long)], [floatval($client->lat), floatval($client->long)]],
+                    'coordinates' => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
                     'color' => 'blue',
                     'session_id' => $se->id
                 ];
