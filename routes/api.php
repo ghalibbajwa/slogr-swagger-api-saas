@@ -63,6 +63,7 @@ Route::group(['middleware' => ['auth:api']] ,function () {
         Route::get('/agents', [agentController::class, 'index']);
         Route::get('/cluster', [homeController::class, 'getCluster']);
         Route::get('/links', [homeController::class, 'getLinks']);
+        Route::get('/agentlinks', [homeController::class, 'agentLinks']);
         Route::get('/alerts', [alertController::class, 'index']);
         Route::get('/data', [dataController::class, 'index']);
 

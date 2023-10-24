@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\sessions;
 use App\groups;
+use Validator;
 
 class homeController extends Controller
 {
@@ -183,6 +184,48 @@ class homeController extends Controller
         return response()->json(['data' => $data])->setStatusCode(200);
 
     }
+
+
+    function agentLinks(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+
+            'aid' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
+        }
+
+        $sessions = sessions::where('server', '=', $request->aid)->get();
+        
+        $agents = agents::all();
+        $agents = collect($agents)->pluck(null, 'id')->all();
+        $links = array();
+        $count = 0;
+        foreach ($sessions as $se) {
+            try {
+                $server = $agents[$se->server];
+                $client = $agents[$se->client];
+                $links[$count] = [
+                    'coordinates' => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
+                    'color' => 'blue',
+                    'session_id' => $se->id
+                ];
+
+                $count += 1;
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+        return response()->json($links);
+
+
+
+    }
+
+
 
 
     function getLinks()
