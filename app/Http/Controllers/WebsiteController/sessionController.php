@@ -62,7 +62,7 @@ class sessionController extends Controller
      */
 
     public function index(Request $request)
-    {   
+    {
 
         $page = 1;
         $size = 10;
@@ -125,7 +125,7 @@ class sessionController extends Controller
         $data['page-size'] = $size;
         $data['sessions'] = $sessionsForPagew;
 
-       
+
         return response()->json(['data' => $data])->setStatusCode(200);
 
     }
@@ -451,34 +451,50 @@ class sessionController extends Controller
 
 
 
-    public function sessiondetail(Request $request){
+    public function sessiondetail(Request $request)
+    {
 
         $session = sessions::find($request->sid);
-        $client = agents::find($session->client);
-        $server = agents::find($session->server);
+        if ($session) {
+            $client = agents::find($session->client);
+            if ($client) {
+                $server = agents::find($session->server);
+                if ($server) {
 
-        
+                    $analytic = analytics::where('session_id', '=', $request->sid)->get();
+                    $rtt = [];
+                    $up = [];
+                    $down = [];
 
-        $analytic = analytics::where('session_id', '=', $request->sid)->get();
+                    foreach ($analytic as $lits) {
+                        array_push($rtt, [$lits->avg_rtt, $lits->created_at]);
+                        array_push($up, [$lits->avg_up, $lits->created_at]);
+                        array_push($down, [$lits->avg_down, $lits->created_at]);
+                    }
 
-        $rtt=[];
-        $up=[];
-        $down=[];
 
-        foreach( $analytic as $lits ) {
-            array_push($rtt,[$lits->avg_rtt, $lits->created_at]);
-            array_push($up,[$lits->avg_up, $lits->created_at]);
-            array_push($down,[$lits->avg_down, $lits->created_at]);
+                    $data['client'] = $client;
+                    $data['server'] = $server;
+                    $data['rtt'] = $rtt;
+                    $data['uplink'] = $up;
+                    $data['downlink'] = $down;
+
+                    return response()->json(['data' => $data])->setStatusCode(200);
+
+                } else {
+                    return response()->json(['error' => "server data not found"])->setStatusCode(400);
+                }
+            } else {
+                return response()->json(['error' => "client data not found"])->setStatusCode(400);
+            }
+        } else {
+            return response()->json(['error' => "session not found"])->setStatusCode(400);
         }
 
 
-        $data['client'] = $client;
-        $data['server'] = $server;
-        $data['rtt'] = $rtt;
-        $data['uplink'] = $up;
-        $data['downlink'] = $down;
 
-        return response()->json(['data' => $data])->setStatusCode(200);
-        
+
+
+
     }
 }

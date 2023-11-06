@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\WebsiteController;
 
+use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -457,9 +458,14 @@ class agentController extends Controller
         
         $agents=[];
         foreach( $sessions as $session ){
+            try{
             $curr=agents::find($session->client);
             $curr->session_id= $session->id;
             array_push( $agents, $curr);
+            }
+            catch(Exception $e){
+                continue;
+            }
         }
 
         if(count($agents) > 0){
