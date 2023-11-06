@@ -94,7 +94,11 @@ class analyticController extends Controller
         }
 
         $analytic = analytics::where('session_id', '=', $request->sid)->get();
+        
        
+
+
+
         $analytic = $analytic->toArray();
         
         $offset = ($page - 1) * $size;
@@ -106,6 +110,7 @@ class analyticController extends Controller
         $data['prev'] = $prev;
         $data['page-size'] = $size;
         $data['analytics'] = $analyticsforpage;
+        
 
         return response()->json(['data' => $data])->setStatusCode(200);
         

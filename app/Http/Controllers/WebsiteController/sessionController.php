@@ -6,6 +6,7 @@ namespace App\Http\Controllers\WebsiteController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Validator;
 use App\sessions;
 use App\profiles;
@@ -15,7 +16,6 @@ use GuzzleHttp;
 use App\analytics;
 use Config;
 use App\alerts;
-
 
 use Illuminate\Routing\UrlGenerator;
 
@@ -61,21 +61,71 @@ class sessionController extends Controller
      * )
      */
 
-    public function index()
-    {
-        $sessions = sessions::all();
-        $agents = agents::all();
-        $profiles = profiles::all();
-        $pros = [];
+    public function index(Request $request)
+    {   
 
-        foreach ($profiles as $pro) {
-            $pros[$pro->id] = $pro;
+        $page = 1;
+        $size = 10;
+        if ($request->page) {
+            $page = $request->page;
+        }
+        if ($request->size) {
+            $size = $request->size;
         }
 
-        $data['agents'] = $agents;
-        $data['sessions'] = $sessions;
-        $data['profiles'] = $profiles;
-        $data['pros'] = $pros;
+
+
+        $next = $page + 1;
+        $prev = null;
+        if ($page != 1) {
+            $prev = $page - 1;
+        }
+
+
+        $sessions = sessions::orderBy('created_at', 'desc')->get();
+
+        if ($request->c_name) {
+            $c_name = $request->c_name;
+            $filteredAgents = $sessions->filter(function ($sessions) use ($c_name) {
+                return Str::contains($sessions->c_name, $c_name);
+            });
+            $sessions = $filteredAgents;
+        }
+
+
+
+        if ($request->s_name) {
+            $s_name = $request->s_name;
+            $filteredAgents = $sessions->filter(function ($sessions) use ($s_name) {
+                return Str::contains($sessions->s_name, $s_name);
+            });
+            $sessions = $filteredAgents;
+        }
+
+
+
+        if ($request->p_name) {
+            $p_name = $request->p_name;
+            $filteredAgents = $sessions->filter(function ($sessions) use ($p_name) {
+                return Str::contains($sessions->p_name, $p_name);
+            });
+            $sessions = $filteredAgents;
+        }
+
+
+        $sessionsarray = $sessions->toArray();
+
+        $offset = ($page - 1) * $size;
+        $sessionsForPagew = array_slice($sessionsarray, $offset, $size);
+
+
+        $data['count'] = count($sessionsarray);
+        $data['next'] = $next;
+        $data['prev'] = $prev;
+        $data['page-size'] = $size;
+        $data['sessions'] = $sessionsForPagew;
+
+       
         return response()->json(['data' => $data])->setStatusCode(200);
 
     }
@@ -407,8 +457,26 @@ class sessionController extends Controller
         $client = agents::find($session->client);
         $server = agents::find($session->server);
 
+        
+
+        $analytic = analytics::where('session_id', '=', $request->sid)->get();
+
+        $rtt=[];
+        $up=[];
+        $down=[];
+
+        foreach( $analytic as $lits ) {
+            array_push($rtt,[$lits->avg_rtt, $lits->created_at]);
+            array_push($up,[$lits->avg_up, $lits->created_at]);
+            array_push($down,[$lits->avg_down, $lits->created_at]);
+        }
+
+
         $data['client'] = $client;
         $data['server'] = $server;
+        $data['rtt'] = $rtt;
+        $data['uplink'] = $up;
+        $data['downlink'] = $down;
 
         return response()->json(['data' => $data])->setStatusCode(200);
         

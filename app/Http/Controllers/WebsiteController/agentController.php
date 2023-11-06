@@ -453,7 +453,19 @@ class agentController extends Controller
 
 
     public function referenceSessions(Request $request){
-        $sessions = sessions::where('server','=',$request->aid) ->select('c_name', 'id')->get();
-        return response()->json(['sessions' => $sessions])->setStatusCode(200);
+        $sessions = sessions::where('server','=',$request->aid)->select('client', 'id')->get();
+        
+        $agents=[];
+        foreach( $sessions as $session ){
+            $curr=agents::find($session->client);
+            $curr->session_id= $session->id;
+            array_push( $agents, $curr);
+        }
+
+        if(count($agents) > 0){
+            return response()->json(['sessions' => $agents])->setStatusCode(200);
+        }else{
+            return response()->json(['sessions' => "no data found"])->setStatusCode(200);
+        }
     }
 }
