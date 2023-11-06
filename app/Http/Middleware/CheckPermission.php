@@ -18,7 +18,7 @@ class CheckPermission
 
         if (auth()->check()) {
             $user = auth()->user();
-
+            
             if ($user->roles->count() > 0) {
                 $permissions = auth()->user()->roles[0]->permissions;
             }
@@ -27,14 +27,15 @@ class CheckPermission
             }
 
             $permissionExists = false;
-
+            
             foreach ($permissions as $permissions) {
                 if ($permissions->name === $permission) {
                     $permissionExists = true;
+                   
                     break; // You found the desired permission, so no need to continue the loop
                 }
             }
-
+           
             if ($permissionExists) {
                 return $next($request);
             } else {
