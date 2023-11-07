@@ -467,17 +467,17 @@ class sessionController extends Controller
                     $down = [];
 
                     foreach ($analytic as $lits) {
-                        array_push($rtt, json_encode(["value"=>$lits->avg_rtt, "date"=>$lits->created_at]));
-                        array_push($up, json_encode(["value"=>$lits->avg_up, "date"=>$lits->created_at]));
-                        array_push($down, json_encode(["value"=>$lits->avg_down, "date"=>$lits->created_at]));
+                        array_push($rtt, ["value"=>$lits->avg_rtt, "date"=>$lits->created_at]);
+                        array_push($up, ["value"=>$lits->avg_up, "date"=>$lits->created_at]);
+                        array_push($down, ["value"=>$lits->avg_down, "date"=>$lits->created_at]);
                     }
 
 
                     $data['client'] = $client;
                     $data['server'] = $server;
-                    $data['rtt'] = $rtt;
-                    $data['uplink'] = $up;
-                    $data['downlink'] = $down;
+                    $data['rtt'] = json_encode($rtt);
+                    $data['uplink'] = json_encode($up);
+                    $data['downlink'] = json_encode($down);
 
                     return response()->json(['data' => $data])->setStatusCode(200);
 
