@@ -475,9 +475,9 @@ class sessionController extends Controller
 
                     $data['client'] = $client;
                     $data['server'] = $server;
-                    $data['rtt'] = json_encode($rtt);
-                    $data['uplink'] = json_encode($up);
-                    $data['downlink'] = json_encode($down);
+                    $data['rtt'] = $rtt;
+                    $data['uplink'] = $up;
+                    $data['downlink'] = $down;
 
                     return response()->json(['data' => $data])->setStatusCode(200);
 
