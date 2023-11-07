@@ -467,9 +467,9 @@ class sessionController extends Controller
                     $down = [];
 
                     foreach ($analytic as $lits) {
-                        array_push($rtt, [$lits->avg_rtt, $lits->created_at]);
-                        array_push($up, [$lits->avg_up, $lits->created_at]);
-                        array_push($down, [$lits->avg_down, $lits->created_at]);
+                        array_push($rtt, json_encode(["value"=>$lits->avg_rtt, "date"=>$lits->created_at]));
+                        array_push($up, json_encode(["value"=>$lits->avg_up, "date"=>$lits->created_at]));
+                        array_push($down, json_encode(["value"=>$lits->avg_down, "date"=>$lits->created_at]));
                     }
 
 
