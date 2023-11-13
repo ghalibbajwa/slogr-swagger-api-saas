@@ -199,67 +199,101 @@ class homeController extends Controller
         }
 
         $sessions = sessions::where('server', '=', $request->aid)->get();
+
+        $agents = agents::all();
+        $agents = collect($agents)->pluck(null, 'id')->all();
+        $links = array();
+        $count = 0;
+        foreach ($sessions as $se) {
+            try {
+                $server = $agents[$se->server];
+                $client = $agents[$se->client];
+                $links[$count] = [
+                    'coordinates' => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
+                    'color' => 'blue',
+                    'session_id' => $se->id
+                ];
+
+                $count += 1;
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+        return response()->json($links);
+
+
+
+    }
+
+    function getLinks(Request $request)
+    {   
+
+        if ($request->group) {
+            $group = groups::find($request->group);
+
+            $sessions = $group->sessions;
+        }
+        else{
+
+            $sessions = sessions::all();
+        }
+        $agents = agents::all();
+        $agents = collect($agents)->pluck(null, 'id')->all();
+
+
+        $links = array();
+        $count = 0;
+        foreach ($sessions as $se) {
+            try {
+                $server = $agents[$se->server];
+                $client = $agents[$se->client];
+                $links[$count] = [
+                    'coordinates' => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
+                    'color' => 'blue',
+                    'session_id' => $se->id
+                ];
+
+                $count += 1;
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+
+
+        return response()->json($links);
+    }
+
+    function getCluster(Request $request)
+    {
+
+
+
+        $agents = agents::all();
+        if ($request->group) {
+
+            $group = groups::find($request->group);
+
+            $sessions = $group->sessions;
+
+
+
+            $uniqueIdsCollection = collect();
+
+            // Iterate over sessions and add unique server-client combinations to the collection
+            $sessions->each(function ($session) use ($uniqueIdsCollection) {
+                $uniqueIdsCollection->push($session->server);
+                $uniqueIdsCollection->push($session->client);
+            });
+
+            // Get unique values from the collection
+            $uniqueIdsArray = $uniqueIdsCollection->unique()->values()->all();
+
+            
+
+            $agents = agents::whereIn('id', $uniqueIdsArray)->get();
         
-        $agents = agents::all();
-        $agents = collect($agents)->pluck(null, 'id')->all();
-        $links = array();
-        $count = 0;
-        foreach ($sessions as $se) {
-            try {
-                $server = $agents[$se->server];
-                $client = $agents[$se->client];
-                $links[$count] = [
-                    'coordinates' => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
-                    'color' => 'blue',
-                    'session_id' => $se->id
-                ];
-
-                $count += 1;
-            } catch (\Exception $e) {
-                continue;
-            }
-        }
-        return response()->json($links);
-
-
-
-    }
-
-
-
-
-    function getLinks()
-    {
-        $sessions = sessions::all();
-        $agents = agents::all();
-        $agents = collect($agents)->pluck(null, 'id')->all();
-
-
-        $links = array();
-        $count = 0;
-        foreach ($sessions as $se) {
-            try {
-                $server = $agents[$se->server];
-                $client = $agents[$se->client];
-                $links[$count] = [
-                    'coordinates' => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
-                    'color' => 'blue',
-                    'session_id' => $se->id
-                ];
-
-                $count += 1;
-            } catch (\Exception $e) {
-                continue;
-            }
         }
 
-
-        return response()->json($links);
-    }
-
-    function getCluster()
-    {
-        $agents = agents::all();
 
 
         $featureCollection = [

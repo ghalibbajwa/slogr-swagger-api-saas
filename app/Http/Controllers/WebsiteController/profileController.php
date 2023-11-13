@@ -39,7 +39,7 @@ class profileController extends Controller
     {
         $profiles = profiles::all();
         $data['profiles'] = $profiles;
-        return response()->json(['data' => $data])->setStatusCode(200);
+        return response()->json($data)->setStatusCode(200);
 
 
     }
@@ -195,7 +195,7 @@ class profileController extends Controller
         }
 
         if ($request->edit == true) {
-            $profile = profiles::find($request->aid);
+            $profile = profiles::find($request->id);
         } else {
 
             $profile = new profiles;
@@ -220,7 +220,7 @@ class profileController extends Controller
         $success['profile'] = $profile;
 
 
-        return response()->json(['success' => $success])->setStatusCode(200);
+        return response()->json($success)->setStatusCode(200);
     }
 
 
@@ -260,9 +260,16 @@ class profileController extends Controller
 
 
 
-        $agent = profiles::find($request->delete);
-        $agent->delete();
-        return redirect()->back()->with('a_status', 'success');
+        $profile = profiles::find($request->id);
+
+        if ($profile) {
+            $profile->delete();
+
+            return response()->json(['success' => "profile deleted"])->setStatusCode(200);
+        } else {
+            return response()->json(['error' => "profile not found"])->setStatusCode(400);
+
+        }
 
 
     }
