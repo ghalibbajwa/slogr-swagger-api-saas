@@ -74,7 +74,7 @@ class groupControlller extends Controller
 
 
         $groups = groups::all();
-        
+
 
 
 
@@ -151,10 +151,9 @@ class groupControlller extends Controller
             return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
         }
 
-        $trimmedString = trim($request->sessions, '{}');
-        $arrayValues = explode(',', $trimmedString);
+       
 
-        $sessionsarray = array_map('intval', $arrayValues);
+        $sessionsarray = array_map('intval', $request->sessions);
 
 
         $group = new groups;
@@ -185,9 +184,10 @@ class groupControlller extends Controller
 
 
 
-    public function remove(Request $request){
+    public function remove(Request $request)
+    {
 
-        
+
         $group = groups::find($request->id);
 
         if ($group) {
@@ -250,21 +250,28 @@ class groupControlller extends Controller
      * )
      */
 
-    function getdata(Request $request)
+    function getdata($id)
     {
 
-        $group = groups::find($request->id);
-        
-        $sessions = $group->sessions;
+        $group = groups::find($id);
+        if ($group) {
+            $sessions = $group->sessions;
 
-        $data = [
-            'group' => $group,
-        ];
-
-
+            $data = [
+                'group' => $group,
+            ];
 
 
-        return response()->json($data)->setStatusCode(200);
+
+
+            return response()->json($data)->setStatusCode(200);
+
+        } else {
+            return response()->json(['error' => "group not found"])->setStatusCode(400);
+
+        }
+
+
 
 
 
