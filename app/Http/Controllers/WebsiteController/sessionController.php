@@ -454,7 +454,7 @@ class sessionController extends Controller
     public function sessiondetail(Request $request)
     {
 
-        $session = sessions::find($request->sid)->get(100);
+        $session = sessions::find($request->sid)->take(100);
         if ($session) {
             $client = agents::find($session->client);
             if ($client) {
