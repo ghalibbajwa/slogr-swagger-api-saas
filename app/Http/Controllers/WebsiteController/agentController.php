@@ -269,7 +269,7 @@ class agentController extends Controller
 
             if ($validator->fails()) {
 
-                return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
+                return response()->json(['error' => $validator->errors()->first()])->setStatusCode(400);
             }
 
 
@@ -384,7 +384,7 @@ class agentController extends Controller
 
         if ($validator->fails()) {
 
-            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(400);
         }
 
         $agent = new agents;
@@ -456,6 +456,7 @@ class agentController extends Controller
     public function referenceSessions(Request $request){
         $sessions = sessions::where('server','=',$request->aid)->select('client', 'id')->get();
         
+
         $agents=[];
         foreach( $sessions as $session ){
             try{
@@ -468,10 +469,8 @@ class agentController extends Controller
             }
         }
 
-        if(count($agents) > 0){
-            return response()->json(['sessions' => $agents])->setStatusCode(200);
-        }else{
-            return response()->json(['sessions' => "no data found"])->setStatusCode(200);
-        }
+
+        return response()->json(['sessions' => $agents])->setStatusCode(200);
+      
     }
 }

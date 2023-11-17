@@ -195,7 +195,7 @@ class homeController extends Controller
 
         if ($validator->fails()) {
 
-            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(400);
         }
 
         $sessions = sessions::where('server', '=', $request->aid)->get();

@@ -191,7 +191,7 @@ class profileController extends Controller
         // dd($validator->fails()); 
         if ($validator->fails()) {
 
-            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(400);
         }
 
         if ($request->edit == true) {
