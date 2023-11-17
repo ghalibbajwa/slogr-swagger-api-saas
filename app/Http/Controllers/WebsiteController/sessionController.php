@@ -515,7 +515,7 @@ class sessionController extends Controller
                 $server = agents::find($session->server);
                 if ($server) {
 
-                    $analytic = analytics::where('session_id', '=', $request->sid)->orderBy('created_at', 'desc')->take(100)->get();
+                    $analytic = analytics::where('session_id', '=', $request->sid)->get();
                     $rtt = [];
                     $up = [];
                     $down = [];
