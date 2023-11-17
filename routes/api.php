@@ -70,6 +70,7 @@ Route::group(['middleware' => ['auth:api']] ,function () {
         // Route::get('/down/{id}',  [agentController::class, 'getDownload']);
         Route::get('/sessions', [sessionController::class, 'index']);
         Route::get('/getsession', [sessionController::class, 'sessiondetail']);
+        Route::get('/getmetrics', [sessionController::class, 'sessionmetrics']);
         Route::get('/profiles', [profileController::class, 'index']);
         Route::get('/push/{id}', [profileController::class, 'push']);
         Route::get('/ip', [agentController::class, 'get_ip']);

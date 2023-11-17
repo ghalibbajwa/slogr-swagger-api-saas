@@ -454,14 +454,15 @@ class sessionController extends Controller
     public function sessiondetail(Request $request)
     {
 
-        $session = sessions::find($request->sid)->take(100);
+        $session = sessions::find($request->sid);
+
         if ($session) {
             $client = agents::find($session->client);
             if ($client) {
                 $server = agents::find($session->server);
                 if ($server) {
 
-                    $analytic = analytics::where('session_id', '=', $request->sid)->get();
+                    $analytic = analytics::where('session_id', '=', $request->sid)->orderBy('created_at', 'desc')->take(100)->get();
                     $rtt = [];
                     $up = [];
                     $down = [];
@@ -497,4 +498,72 @@ class sessionController extends Controller
 
 
     }
+
+
+
+
+
+
+    public function sessionmetrics(Request $request)
+    {
+
+        $session = sessions::find($request->sid);
+
+        if ($session) {
+            $client = agents::find($session->client);
+            if ($client) {
+                $server = agents::find($session->server);
+                if ($server) {
+
+                    $analytic = analytics::where('session_id', '=', $request->sid)->orderBy('created_at', 'desc')->take(100)->get();
+                    $rtt = [];
+                    $up = [];
+                    $down = [];
+
+                    foreach ($analytic as $lits) {
+                        array_push($rtt, ["value"=>$lits->avg_rtt, "date"=>$lits->created_at]);
+                        array_push($up, ["value"=>$lits->avg_up, "date"=>$lits->created_at]);
+                        array_push($down, ["value"=>$lits->avg_down, "date"=>$lits->created_at]);
+                    }
+
+
+
+                    if($request->metric="uplink"){
+                        $data['uplink'] = $up;
+                    }
+                    elseif($request->metric="rtt"){
+                        $data['rtt'] = $rtt;
+                    }
+                    elseif($request->metric="downlink"){
+                        $data['downlink'] = $down;
+                    }
+                    
+                  
+                  
+
+                    return response()->json(['data' => $data])->setStatusCode(200);
+
+                } else {
+                    return response()->json(['error' => "server data not found"])->setStatusCode(400);
+                }
+            } else {
+                return response()->json(['error' => "client data not found"])->setStatusCode(400);
+            }
+        } else {
+            return response()->json(['error' => "session not found"])->setStatusCode(400);
+        }
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
 }
