@@ -352,7 +352,7 @@ class sessionController extends Controller
         if ($session) {
 
             $session->delete();
-            return redirect()->back()->with('a_status', 'success');
+            return response()->json(['success' => "session deleted"])->setStatusCode(200);
 
         } else {
             return response()->json(['error' => "Session not found"])->setStatusCode(400);
