@@ -243,6 +243,46 @@ class homeController extends Controller
 
         $links = array();
         $count = 0;
+
+        $featureCollection = [
+            "type" => "FeatureCollection",
+            "crs" => [
+                "type" => "name",
+                "properties" => [
+                    "name" => "urn:ogc:def:crs:OGC:1.3:CRS84",
+                ],
+            ],
+            "features" => [],
+        ];
+
+        // Iterate through your data and add it to the features array
+        foreach ($sessions as $se) {
+            $server = $agents[$se->server];
+            $client = $agents[$se->client];
+            $feature = [
+                "type" => "Feature",
+                "geometry" => [
+                    "type" => "LineString",
+                    "coordinates" => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
+                ],
+                "properties" => [
+                    'color' => 'blue',
+                    'session_id' => $se->id
+
+                ]
+            ];
+
+            $featureCollection['features'][] = $feature;
+        }
+
+
+        return response()->json($featureCollection)->setStatusCode(200);
+
+
+
+
+
+
         foreach ($sessions as $se) {
             try {
                 $server = $agents[$se->server];
