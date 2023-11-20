@@ -256,30 +256,30 @@ class homeController extends Controller
         ];
 
         // Iterate through your data and add it to the features array
-        foreach ($sessions as $se) {
-            try{
-                $server = $agents[$se->server];
-                $client = $agents[$se->client];
-                $feature = [
-                    "type" => "Feature",
-                    "geometry" => [
-                        "type" => "LineString",
-                        "coordinates" => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
-                    ],
-                    "properties" => [
-                        'color' => 'blue',
-                        'session_id' => $se->id
+        // foreach ($sessions as $se) {
+        //     try{
+        //         $server = $agents[$se->server];
+        //         $client = $agents[$se->client];
+        //         $feature = [
+        //             "type" => "Feature",
+        //             "geometry" => [
+        //                 "type" => "LineString",
+        //                 "coordinates" => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
+        //             ],
+        //             "properties" => [
+        //                 'color' => 'blue',
+        //                 'session_id' => $se->id
 
-                    ]
-                ];
-            } catch (\Exception $e) {
-                continue;
-            }
-            $featureCollection['features'][] = $feature;
-        }
+        //             ]
+        //         ];
+        //     } catch (\Exception $e) {
+        //         continue;
+        //     }
+        //     $featureCollection['features'][] = $feature;
+        // }
 
 
-        return response()->json($featureCollection)->setStatusCode(200);
+        // return response()->json($featureCollection)->setStatusCode(200);
 
 
 
