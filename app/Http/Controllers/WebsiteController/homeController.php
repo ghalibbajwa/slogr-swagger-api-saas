@@ -287,13 +287,12 @@ class homeController extends Controller
         if ($request->profiles) {
 
             $profiles = profiles::all();
-            $limit = 4 * count($sessions);
-            $analytics = Analytics::whereIn('id', function ($query) use ($limit) {
-                $query->select(DB::raw('MAX(id)'))
-                    ->from('analytics')
-                    ->groupBy('session_id')
-                    ->limit($limit);
-            })->get()->keyBy('session_id');
+            // $analytics = Analytics::whereIn('id', function ($query) {
+            //     $query->select(DB::raw('MAX(id)'))
+            //         ->from('analytics')
+            //         ->groupBy('session_id');
+            // })->get()->keyBy('session_id');
+
 
 
 
@@ -302,7 +301,7 @@ class homeController extends Controller
                 $slas = [];
                 foreach ($profiles as $pro) {
                     try {
-                        $metric = $analytics[$se->id];
+                        $metric = Analytics::where('session_id','=',$se->id)->first();
 
                         if ($metric->avg_rtt > $pro->max_rtt || $metric->avg_uplink > $pro->max_uplink || $metric->avg_downlink > $pro->max_downlink) {
                             $slas[$pro->name] = "red";
