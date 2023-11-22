@@ -19,8 +19,6 @@ use App\alerts;
 use App\Services\RabbitMQService;
 use Illuminate\Routing\UrlGenerator;
 use Crypt;
-use Illuminate\Routing\UrlGenerator;
-
 
 
 class sessionController extends Controller

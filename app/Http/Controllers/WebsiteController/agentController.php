@@ -79,7 +79,7 @@ class agentController extends Controller
                 return Str::contains($agent->Country, $country);
             });
             $agents = $filteredAgents;
-            
+
         }
 
         if ($request->organization) {
@@ -127,7 +127,7 @@ class agentController extends Controller
         $agentsForPage = array_slice($agentsArray, $offset, $size);
 
 
-        $data['agentOS'] = ['windows','linux'];
+        $data['agentOS'] = ['windows', 'linux'];
         $data['count'] = count($agentsArray);
         $data['next'] = $next;
         $data['prev'] = $prev;
@@ -373,13 +373,10 @@ class agentController extends Controller
     public function add_agent(Request $request)
     {
 
-
-
-
         $validator = Validator::make($request->all(), [
 
             'name' => 'required|max:255',
-            'os' => 'required|max:225'
+            'agent_code' => 'required|max:225'
         ]);
 
         if ($validator->fails()) {
@@ -387,33 +384,21 @@ class agentController extends Controller
             return response()->json(['error' => $validator->errors()->first()])->setStatusCode(400);
         }
 
-        $agent = new agents;
+        $agent = agents::where('agent_code', "=", $request->agent_code)->first();
 
-        $agent->name = $request->name;
-        $agent->os = $request->os;
-        $agent->status = "pending";
-        $agent->organization_id = auth()->user()->organization_id;
-        $agent->Organization = Organization::find(auth()->user()->organization_id)->name;
+        if ($agent) {
+            $agent->name = $request->name;
 
+            $agent->status = "active";
+            $agent->organization_id = auth()->user()->organization_id;
+            $agent->Organization = Organization::find(auth()->user()->organization_id)->name;
+            $agent->save();
+            return response()->json([$agent])->setStatusCode(200);
 
-        
-
-
-        if($agent->os == "windows"){
-            $agent->type = "client";
+        } else {
+            return response()->json(['error' => "No Agent Found, check your agent code"])->setStatusCode(400);
         }
-        elseif( $agent->os == "linux"){
-            $agent->type = "multi";
-        }
-     
-        $encryptedid = Crypt::encrypt($agent->id);
-        $agent->agent_code =   $encryptedid;
-        $agent->save();
-        $data = [
-            "script" => $encryptedid ,
-            "agent" => $agent
-        ];
-        return response($data);
+
 
 
     }
@@ -456,24 +441,24 @@ class agentController extends Controller
     }
 
 
-    public function referenceSessions(Request $request){
-        $sessions = sessions::where('server','=',$request->aid)->select('client', 'id')->get();
-        
+    public function referenceSessions(Request $request)
+    {
+        $sessions = sessions::where('server', '=', $request->aid)->select('client', 'id')->get();
 
-        $agents=[];
-        foreach( $sessions as $session ){
-            try{
-            $curr=agents::find($session->client);
-            $curr->session_id= $session->id;
-            array_push( $agents, $curr);
-            }
-            catch(Exception $e){
+
+        $agents = [];
+        foreach ($sessions as $session) {
+            try {
+                $curr = agents::find($session->client);
+                $curr->session_id = $session->id;
+                array_push($agents, $curr);
+            } catch (Exception $e) {
                 continue;
             }
         }
 
 
         return response()->json(['sessions' => $agents])->setStatusCode(200);
-      
+
     }
 }

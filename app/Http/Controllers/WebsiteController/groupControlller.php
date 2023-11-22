@@ -72,12 +72,7 @@ class groupControlller extends Controller
     function index()
     {
 
-
         $groups = groups::all();
-
-
-
-
 
         return response()->json($groups)->setStatusCode(200);
 
