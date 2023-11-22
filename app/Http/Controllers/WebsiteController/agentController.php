@@ -12,8 +12,9 @@ use Illuminate\Support\Str;
 use Validator;
 use App\asn_table;
 use App\Services\RabbitMQService;
+use Illuminate\Support\Facades\Crypt;
+use App\Organization;
 use App\sessions;
-
 
 
 class agentController extends Controller
@@ -126,6 +127,7 @@ class agentController extends Controller
         $agentsForPage = array_slice($agentsArray, $offset, $size);
 
 
+        $data['agentOS'] = ['windows','linux'];
         $data['count'] = count($agentsArray);
         $data['next'] = $next;
         $data['prev'] = $prev;
@@ -150,7 +152,7 @@ class agentController extends Controller
     {
         $producer = new RabbitMQService;
         $mesage = "35.229.251.91,8009,20,50,2000,0,192.168.100.52,50,test,./";
-        $producer->publish($mesage, "agent1");
+        $producer->publish($mesage, "hello");
     }
 
 
@@ -261,6 +263,7 @@ class agentController extends Controller
             $validator = Validator::make($request->all(), [
 
                 'name' => 'required|max:255',
+                'aid' => 'required|numeric',
             ]);
 
 
@@ -376,11 +379,8 @@ class agentController extends Controller
         $validator = Validator::make($request->all(), [
 
             'name' => 'required|max:255',
+            'os' => 'required|max:225'
         ]);
-
-
-
-        // dd($validator->fails()); 
 
         if ($validator->fails()) {
 
@@ -390,24 +390,27 @@ class agentController extends Controller
         $agent = new agents;
 
         $agent->name = $request->name;
-        $agent->ipaddress = "192.168.1.123";
-        $agent->platform = "Linux";
-        $agent->lat = "12312";
-        $agent->long = "4534";
-        $agent->location = "Karachi";
-        $agent->machine_name = "Machine Name";
-        $agent->arch = "X64";
-        $agent->processor = "Intel";
-        $agent->machine = "MAchine";
-        $agent->Country = "Pakistan";
-        $agent->Organization = "Slogr";
+        $agent->os = $request->os;
+        $agent->status = "pending";
+        $agent->organization_id = auth()->user()->organization_id;
+        $agent->Organization = Organization::find(auth()->user()->organization_id)->name;
 
 
+        
 
+
+        if($agent->os == "windows"){
+            $agent->type = "client";
+        }
+        elseif( $agent->os == "linux"){
+            $agent->type = "multi";
+        }
+     
+        $encryptedid = Crypt::encrypt($agent->id);
+        $agent->agent_code =   $encryptedid;
         $agent->save();
-
         $data = [
-            "script" => "installationscript",
+            "script" => $encryptedid ,
             "agent" => $agent
         ];
         return response($data);

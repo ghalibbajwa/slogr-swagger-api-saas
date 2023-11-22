@@ -277,15 +277,5 @@ class AuthController extends Controller
      *     )
      * )
      */
-    public function assign(Request $request){
-        // dd($request->role);
-        
-        $user = User::where('email','=',$request->email)->first();
-        $role = Role::find($request->role);
-
-        $user->roles()->attach($role);
-
-        return response()->json(['success' => [$user,$role]])->setStatusCode(200);
-
-    }
+   
 }

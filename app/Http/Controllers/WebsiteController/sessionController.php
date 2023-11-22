@@ -16,8 +16,12 @@ use GuzzleHttp;
 use App\analytics;
 use Config;
 use App\alerts;
-
+use App\Services\RabbitMQService;
 use Illuminate\Routing\UrlGenerator;
+use Crypt;
+use Illuminate\Routing\UrlGenerator;
+
+
 
 class sessionController extends Controller
 {
@@ -367,17 +371,11 @@ class sessionController extends Controller
 
         try {
 
-
-            $client = new Client();
-            $cip = str_replace('http://', '', env('APP_URL'));
-            $ip = agents::find($session->client)->ipaddress;
-            $server = agents::find($session->server)->ipaddress;
-            $url = 'http://' . $ip . ':5000/exe';
-            $session->server = $server;
-            $session->cip = $cip;
-            $response = $client->post($url, [
-                GuzzleHttp\RequestOptions::JSON => $session // or 'json' => [...]
-            ]);
+            $producer = new RabbitMQService;
+            $message = agents::find($session->server)->ipaddress.",8009,".$session->n_packets.",".$session->p_interval.",".$session->w_time.",".$session->dscp.",".agents::find($session->client)->ipaddress.",".$session->p_size.",".$session->id.",".agents::find($session->client)->agent_code;
+            // $mesage = "35.229.251.91,8009,20,50,2000,0,192.168.100.52,50,test,./";
+            
+            $producer->publish($message, "sessions" );
             return "suc";
 
         } catch (\Exception $e) {

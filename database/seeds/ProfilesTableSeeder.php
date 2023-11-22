@@ -15,87 +15,30 @@ class ProfilesTableSeeder extends Seeder
     public function run()
     {
 
-
-
-
-        Role::Create([
-            'name' => 'admin'
-        ]);
-        Role::Create([
-            'name' => 'guest'
-        ]);
-        Role::Create([
-            'name' => 'moderator'
-        ]);
-
-        $user = User::create([
-            'name' => 'admin',
-            'email' => 'admin@slogr.io',
-            'password' => Hash::make('password'),
-        ]);
-
-        profiles::create([
-            'name' => 'voip',
-            'count' => 1,
-            'n_packets' => 100,
-            'p_interval' => 40,
-            'p_size' => 50,
-            'w_time' => 2000,
-            'dscp' => 46,
-            'max_loss' => 1,
-            'max_uplink' => 100,
-            'max_downlink' => 100,
-            'max_jitter' => 30,
-            'max_rtt' => 150,
-        ]);
-        profiles::create([
-            'name' => 'gaming',
-            'count' => 1,
-            'n_packets' => 100,
-            'p_interval' => 40,
-            'p_size' => 50,
-            'w_time' => 2000,
-            'dscp' => 26,
-            'max_loss' => 5,
-            'max_uplink' => 100,
-            'max_downlink' => 100,
-            'max_jitter' => 30,
-            'max_rtt' => 50,
-        ]);
-        profiles::create([
-            'name' => 'streaming',
-            'count' => 1,
-            'n_packets' => 100,
-            'p_interval' => 40,
-            'p_size' => 50,
-            'w_time' => 2000,
-            'dscp' => 26,
-            'max_loss' => 1,
-            'max_uplink' => 100,
-            'max_downlink' => 100,
-            'max_jitter' => 30,
-            'max_rtt' => 250,
-        ]);
-        profiles::create([
-            'name' => 'PcoIP',
-            'count' => 1,
-            'n_packets' => 100,
-            'p_interval' => 40,
-            'p_size' => 50,
-            'w_time' => 2000,
-            'dscp' => 46,
-            'max_loss' => 1,
-            'max_uplink' => 100,
-            'max_downlink' => 100,
-            'max_jitter' => 30,
-            'max_rtt' => 150,
-        ]);
-
-
-        $role = Role::find(1);
-
-
-        $user->roles()->attach($role);
+        profiles::create(['name' => 'VoIP', 'count' => 1, 'n_packets' => 50, 'p_size' => 200, 'w_time' => 200050, 'dscp' => 46, 'p_interval' => 20, 'rtt-g' => 150, 'rtt-r' => 300, 'uplink-g' => 30, 'uplink-r' => 60, 'downlink-g' => 30, 'downlink-r' => 60, 'delay-g' => 150, 'delay-r' => 300, 'downlink-bw-g' => 0.1, 'downlink-bw-r' => 0.8, 'uplink-bw-g' => 0.1, 'uplink-bw-r' => 0.8, 'jitter-g' => 15, 'jitter-r' => 30, 'loss-g' => 0.5, 'loss-r' => 1.0]);
+        profiles::create(['name' => 'Gaming', 'count' => 1, 'n_packets' => 20, 'p_size' => 100, 'w_time' => 200020, 'dscp' => 34, 'p_interval' => 50, 'rtt-g' => 20, 'rtt-r' => 50, 'uplink-g' => 10, 'uplink-r' => 50, 'downlink-g' => 10, 'downlink-r' => 50, 'delay-g' => 20, 'delay-r' => 100, 'downlink-bw-g' => 10, 'downlink-bw-r' => 1.0, 'uplink-bw-g' => 3.0, 'uplink-bw-r' => 1.0, 'jitter-g' => 10, 'jitter-r' => 30, 'loss-g' => 0.5, 'loss-r' => 1.0]);
+        profiles::create(['name' => 'Streaming', 'count' => 1, 'n_packets' => 30, 'p_size' => 1200, 'w_time' => 200030, 'dscp' => 36, 'p_interval' => 50, 'rtt-g' => 100, 'rtt-r' => 200, 'uplink-g' => 50, 'uplink-r' => 100, 'downlink-g' => 50, 'downlink-r' => 50, 'delay-g' => 50, 'delay-r' => 100, 'downlink-bw-g' => 5, 'downlink-bw-r' => 3.0, 'uplink-bw-g' => 1.0, 'uplink-bw-r' => 3.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.1, 'loss-r' => 0.5]);
+        profiles::create(['name' => 'PCoIP', 'count' => 1, 'n_packets' => 33, 'p_size' => 500, 'w_time' => 200033, 'dscp' => 40, 'p_interval' => 30, 'rtt-g' => 100, 'rtt-r' => 150, 'uplink-g' => 50, 'uplink-r' => 100, 'downlink-g' => 50, 'downlink-r' => 100, 'delay-g' => 100, 'delay-r' => 150, 'downlink-bw-g' => 5, 'downlink-bw-r' => 2.0, 'uplink-bw-g' => 2.0, 'uplink-bw-r' => 1.0, 'jitter-g' => 15, 'jitter-r' => 30, 'loss-g' => 0.5, 'loss-r' => 1.0]);
+        profiles::create(['name' => 'Internet Browsing', 'count' => 1, 'n_packets' => 10, 'p_size' => 1500, 'w_time' => 200010, 'dscp' => 8, 'p_interval' => 50, 'rtt-g' => 150, 'rtt-r' => 300, 'uplink-g' => 100, 'uplink-r' => 200, 'downlink-g' => 100, 'downlink-r' => 200, 'delay-g' => 150, 'delay-r' => 300, 'downlink-bw-g' => 10, 'downlink-bw-r' => 5.0, 'uplink-bw-g' => 3.0, 'uplink-bw-r' => 1.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 1.0, 'loss-r' => 5.0]);
+        profiles::create(['name' => 'Videoconferencing', 'count' => 1, 'n_packets' => 50, 'p_size' => 300, 'w_time' => 200050, 'dscp' => 34, 'p_interval' => 20, 'rtt-g' => 150, 'rtt-r' => 300, 'uplink-g' => 50, 'uplink-r' => 100, 'downlink-g' => 50, 'downlink-r' => 50, 'delay-g' => 150, 'delay-r' => 300, 'downlink-bw-g' => 2, 'downlink-bw-r' => 1.0, 'uplink-bw-g' => 2.0, 'uplink-bw-r' => 1.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.5, 'loss-r' => 1.0]);
+        profiles::create(['name' => 'FTP Download', 'count' => 1, 'n_packets' => 10, 'p_size' => 1500, 'w_time' => 200010, 'dscp' => 10, 'p_interval' => 50, 'rtt-g' => 100, 'rtt-r' => 200, 'uplink-g' => 100, 'uplink-r' => 200, 'downlink-g' => 100, 'downlink-r' => 200, 'delay-g' => 100, 'delay-r' => 200, 'downlink-bw-g' => 20, 'downlink-bw-r' => 10.0, 'uplink-bw-g' => 1.0, 'uplink-bw-r' => 0.5, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.1, 'loss-r' => 0.5]);
+        profiles::create(['name' => 'FTP Upload', 'count' => 1, 'n_packets' => 10, 'p_size' => 1500, 'w_time' => 200010, 'dscp' => 12, 'p_interval' => 50, 'rtt-g' => 100, 'rtt-r' => 200, 'uplink-g' => 100, 'uplink-r' => 200, 'downlink-g' => 100, 'downlink-r' => 200, 'delay-g' => 100, 'delay-r' => 200, 'downlink-bw-g' => 5, 'downlink-bw-r' => 3.0, 'uplink-bw-g' => 10.0, 'uplink-bw-r' => 5.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.1, 'loss-r' => 0.5]);
+        profiles::create(['name' => 'General Video Streaming', 'count' => 1, 'n_packets' => 20, 'p_size' => 1200, 'w_time' => 200020, 'dscp' => 36, 'p_interval' => 50, 'rtt-g' => 100, 'rtt-r' => 200, 'uplink-g' => 30, 'uplink-r' => 60, 'downlink-g' => 30, 'downlink-r' => 60, 'delay-g' => 50, 'delay-r' => 100, 'downlink-bw-g' => 25, 'downlink-bw-r' => 5.0, 'uplink-bw-g' => 1.0, 'uplink-bw-r' => 0.5, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.1, 'loss-r' => 0.5]);
+        profiles::create(['name' => 'Cloud Services (SaaS)', 'count' => 1, 'n_packets' => 10, 'p_size' => 1500, 'w_time' => 200010, 'dscp' => 32, 'p_interval' => 50, 'rtt-g' => 100, 'rtt-r' => 300, 'uplink-g' => 100, 'uplink-r' => 300, 'downlink-g' => 100, 'downlink-r' => 300, 'delay-g' => 50, 'delay-r' => 100, 'downlink-bw-g' => 20, 'downlink-bw-r' => 10.0, 'uplink-bw-g' => 20.0, 'uplink-bw-r' => 10.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.1, 'loss-r' => 0.5]);
+        profiles::create(['name' => 'E-commerce Transactions', 'count' => 1, 'n_packets' => 20, 'p_size' => 1500, 'w_time' => 200020, 'dscp' => 26, 'p_interval' => 50, 'rtt-g' => 100, 'rtt-r' => 300, 'uplink-g' => 100, 'uplink-r' => 300, 'downlink-g' => 100, 'downlink-r' => 300, 'delay-g' => 50, 'delay-r' => 100, 'downlink-bw-g' => 20, 'downlink-bw-r' => 10.0, 'uplink-bw-g' => 20.0, 'uplink-bw-r' => 10.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.1, 'loss-r' => 0.5]);
+        profiles::create(['name' => 'Social Media Platforms', 'count' => 1, 'n_packets' => 20, 'p_size' => 1500, 'w_time' => 200020, 'dscp' => 26, 'p_interval' => 50, 'rtt-g' => 150, 'rtt-r' => 500, 'uplink-g' => 100, 'uplink-r' => 300, 'downlink-g' => 100, 'downlink-r' => 300, 'delay-g' => 50, 'delay-r' => 100, 'downlink-bw-g' => 10, 'downlink-bw-r' => 5.0, 'uplink-bw-g' => 10.0, 'uplink-bw-r' => 5.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.1, 'loss-r' => 0.5]);
+        profiles::create(['name' => 'Email Services', 'count' => 1, 'n_packets' => 20, 'p_size' => 1500, 'w_time' => 200020, 'dscp' => 10, 'p_interval' => 50, 'rtt-g' => 100, 'rtt-r' => 300, 'uplink-g' => 100, 'uplink-r' => 300, 'downlink-g' => 100, 'downlink-r' => 300, 'delay-g' => 50, 'delay-r' => 100, 'downlink-bw-g' => 20, 'downlink-bw-r' => 10.0, 'uplink-bw-g' => 20.0, 'uplink-bw-r' => 10.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.1, 'loss-r' => 0.5]);
+        profiles::create(['name' => 'Remote Desktop Services', 'count' => 1, 'n_packets' => 33, 'p_size' => 500, 'w_time' => 200033, 'dscp' => 26, 'p_interval' => 30, 'rtt-g' => 100, 'rtt-r' => 150, 'uplink-g' => 50, 'uplink-r' => 100, 'downlink-g' => 50, 'downlink-r' => 100, 'delay-g' => 100, 'delay-r' => 150, 'downlink-bw-g' => 5, 'downlink-bw-r' => 2.0, 'uplink-bw-g' => 2.0, 'uplink-bw-r' => 1.0, 'jitter-g' => 15, 'jitter-r' => 30, 'loss-g' => 0.5, 'loss-r' => 1.0]);
+        profiles::create(['name' => 'Online Education Platforms', 'count' => 1, 'n_packets' => 10, 'p_size' => 1500, 'w_time' => 200010, 'dscp' => 26, 'p_interval' => 100, 'rtt-g' => 150, 'rtt-r' => 350, 'uplink-g' => 100, 'uplink-r' => 300, 'downlink-g' => 100, 'downlink-r' => 300, 'delay-g' => 50, 'delay-r' => 100, 'downlink-bw-g' => 10, 'downlink-bw-r' => 5.0, 'uplink-bw-g' => 10.0, 'uplink-bw-r' => 5.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.1, 'loss-r' => 0.5]);
+        profiles::create(['name' => 'Large File Transfers', 'count' => 1, 'n_packets' => 20, 'p_size' => 1500, 'w_time' => 200020, 'dscp' => 12, 'p_interval' => 50, 'rtt-g' => 150, 'rtt-r' => 500, 'uplink-g' => 100, 'uplink-r' => 300, 'downlink-g' => 100, 'downlink-r' => 300, 'delay-g' => 50, 'delay-r' => 100, 'downlink-bw-g' => 50, 'downlink-bw-r' => 20.0, 'uplink-bw-g' => 50.0, 'uplink-bw-r' => 20.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.1, 'loss-r' => 0.5]);
+        profiles::create(['name' => 'IoT Devices', 'count' => 1, 'n_packets' => 30, 'p_size' => 100, 'w_time' => 200030, 'dscp' => 0, 'p_interval' => 50, 'rtt-g' => 200, 'rtt-r' => 300, 'uplink-g' => 100, 'uplink-r' => 300, 'downlink-g' => 100, 'downlink-r' => 100 - 300, 'delay-g' => 1 - 3, 'delay-r' => 100, 'downlink-bw-g' => 1 - 3, 'downlink-bw-r' => 3.0, 'uplink-bw-g' => 300.0, 'uplink-bw-r' => 3.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.1, 'loss-r' => 0.5]);
+        profiles::create(['name' => 'Online Gaming (Multiplayer)', 'count' => 1, 'n_packets' => 33, 'p_size' => 120, 'w_time' => 200033, 'dscp' => 34, 'p_interval' => 30, 'rtt-g' => 30, 'rtt-r' => 60, 'uplink-g' => 20, 'uplink-r' => 40, 'downlink-g' => 20, 'downlink-r' => 40, 'delay-g' => 30, 'delay-r' => 60, 'downlink-bw-g' => 3, 'downlink-bw-r' => 1.0, 'uplink-bw-g' => 1.0, 'uplink-bw-r' => 0.5, 'jitter-g' => 10, 'jitter-r' => 20, 'loss-g' => 0.5, 'loss-r' => 1.0]);
+        profiles::create(['name' => 'Live Video Broadcasting', 'count' => 1, 'n_packets' => 50, 'p_size' => 800, 'w_time' => 200050, 'dscp' => 36, 'p_interval' => 20, 'rtt-g' => 150, 'rtt-r' => 300, 'uplink-g' => 50, 'uplink-r' => 100, 'downlink-g' => 100, 'downlink-r' => 200, 'delay-g' => 150, 'delay-r' => 300, 'downlink-bw-g' => 5, 'downlink-bw-r' => 3.0, 'uplink-bw-g' => 10.0, 'uplink-bw-r' => 5.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.5, 'loss-r' => 1.0]);
+        profiles::create(['name' => 'Cloud Gaming', 'count' => 1, 'n_packets' => 50, 'p_size' => 800, 'w_time' => 200050, 'dscp' => 40, 'p_interval' => 20, 'rtt-g' => 30, 'rtt-r' => 70, 'uplink-g' => 20, 'uplink-r' => 50, 'downlink-g' => 20, 'downlink-r' => 50, 'delay-g' => 30, 'delay-r' => 70, 'downlink-bw-g' => 35, 'downlink-bw-r' => 20.0, 'uplink-bw-g' => 10.0, 'uplink-bw-r' => 5.0, 'jitter-g' => 10, 'jitter-r' => 20, 'loss-g' => 0.5, 'loss-r' => 1.0]);
+        profiles::create(['name' => 'VPN', 'count' => 1, 'n_packets' => 20, 'p_size' => 1500, 'w_time' => 200020, 'dscp' => 24, 'p_interval' => 50, 'rtt-g' => 100, 'rtt-r' => 200, 'uplink-g' => 50, 'uplink-r' => 100, 'downlink-g' => 50, 'downlink-r' => 100, 'delay-g' => 100, 'delay-r' => 200, 'downlink-bw-g' => 10, 'downlink-bw-r' => 5.0, 'uplink-bw-g' => 5.0, 'uplink-bw-r' => 2.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.5, 'loss-r' => 1.0]);
+        profiles::create(['name' => 'Web Conferencing', 'count' => 1, 'n_packets' => 20, 'p_size' => 800, 'w_time' => 200020, 'dscp' => 34, 'p_interval' => 50, 'rtt-g' => 150, 'rtt-r' => 300, 'uplink-g' => 50, 'uplink-r' => 100, 'downlink-g' => 50, 'downlink-r' => 100, 'delay-g' => 100, 'delay-r' => 300, 'downlink-bw-g' => 2, 'downlink-bw-r' => 1.0, 'uplink-bw-g' => 2.0, 'uplink-bw-r' => 1.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.5, 'loss-r' => 1.0]);
+        profiles::create(['name' => 'Data Backup and Sync', 'count' => 1, 'n_packets' => 20, 'p_size' => 1500, 'w_time' => 200020, 'dscp' => 12, 'p_interval' => 50, 'rtt-g' => 150, 'rtt-r' => 300, 'uplink-g' => 100, 'uplink-r' => 200, 'downlink-g' => 100, 'downlink-r' => 200, 'delay-g' => 150, 'delay-r' => 300, 'downlink-bw-g' => 50, 'downlink-bw-r' => 20.0, 'uplink-bw-g' => 20.0, 'uplink-bw-r' => 10.0, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.1, 'loss-r' => 0.5]);
+        profiles::create(['name' => 'Music Streaming', 'count' => 1, 'n_packets' => 20, 'p_size' => 600, 'w_time' => 200020, 'dscp' => 36, 'p_interval' => 50, 'rtt-g' => 50, 'rtt-r' => 300, 'uplink-g' => 50, 'uplink-r' => 100, 'downlink-g' => 50, 'downlink-r' => 100, 'delay-g' => 50, 'delay-r' => 100, 'downlink-bw-g' => 0.3, 'downlink-bw-r' => 0.1, 'uplink-bw-g' => 1.0, 'uplink-bw-r' => 0.5, 'jitter-g' => 30, 'jitter-r' => 50, 'loss-g' => 0.1, 'loss-r' => 1.0]);
 
     }
 }

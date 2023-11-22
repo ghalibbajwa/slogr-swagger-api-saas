@@ -4,23 +4,24 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Services\RabbitMQService;
+use Akbansa\LaravelParallelProcessor\ParallelProcessor;
 
 
-class MQConsumerCommand extends Command
+class consumeall extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'mq:consume';
+    protected $signature = 'all:consume';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Consume the mq queue';
+    protected $description = 'Consume the all queues';
 
 
     /**
@@ -40,7 +41,20 @@ class MQConsumerCommand extends Command
      */
     public function handle()
     {
-        $mqService = new RabbitMQService();
-        $mqService->consume();
+        
+
+        $tasks = [
+            ["id" => 1, "command" => "php artisan reporting:consume"],
+            ["id" => 2, "command" => "php artisan register:consume"]
+       
+        ];
+
+        $processor = new ParallelProcessor($tasks);
+        $processor->start();
+
+        // while (!$processor->isFinished()) {
+        //     sleep(1);
+        // }
+
     }
 }

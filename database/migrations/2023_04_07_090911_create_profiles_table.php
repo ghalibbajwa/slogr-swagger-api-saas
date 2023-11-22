@@ -16,17 +16,29 @@ class CreateProfilesTable extends Migration
         Schema::create('profiles', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->integer('count');
-            $table->integer('n_packets');
-            $table->integer('p_interval');
-            $table->integer('p_size');
-            $table->integer('w_time');
-            $table->integer('dscp');
-            $table->integer('max_loss');
-            $table->integer('max_uplink');
-            $table->integer('max_downlink');
-            $table->integer('max_rtt');
-            $table->integer('max_jitter');
+            $table->float('count');
+            $table->float('n_packets');
+            $table->float('p_interval');
+            $table->float('p_size');
+            $table->float('w_time');
+            $table->float('dscp');
+            $table->float('rtt-g');
+            $table->float('rtt-r');
+            $table->float('uplink-g');
+            $table->float('uplink-r');
+            $table->float('downlink-g');
+            $table->float('downlink-r');
+            $table->float('delay-g');
+            $table->float('delay-r');
+            $table->float('downlink-bw-g');
+            $table->float('downlink-bw-r');
+            $table->float('uplink-bw-g');
+            $table->float('uplink-bw-r');
+            $table->float('jitter-g');
+            $table->float('jitter-r');
+            $table->float('loss-g');
+            $table->float('loss-r');
+
             $table->timestamps();
         });
     }

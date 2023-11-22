@@ -28,6 +28,7 @@ class CreateSessionsTable extends Migration
             $table->integer('w_time');
             $table->integer('dscp');
             $table->integer('p_size');
+            $table->integer('organization_id')->nullable();
             $table->timestamps();
         });
     }
