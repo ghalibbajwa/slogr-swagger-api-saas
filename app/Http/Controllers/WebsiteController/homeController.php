@@ -291,9 +291,8 @@ class homeController extends Controller
                 $query->select(DB::raw('MAX(id)'))
                     ->from('analytics')
                     ->groupBy('session_id');
-            })->get();
+            })->get()->keyBy('session_id');
 
-            $analytics = collect($analytics)->keyBy('session_id');
 
 
             foreach ($sessions as $se) {
