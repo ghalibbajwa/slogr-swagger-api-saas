@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
+        "akbansa/parallel-processor": "^1.0",
         "darkaonline/l5-swagger": "^6.0",
         "fideloper/proxy": "^4.0",
         "fruitcake/laravel-cors": "^3.0",

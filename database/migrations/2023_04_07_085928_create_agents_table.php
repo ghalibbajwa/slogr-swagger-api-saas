@@ -16,8 +16,9 @@ class CreateAgentsTable extends Migration
         Schema::create('agents', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('agent_code');
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('ipaddress')->nullable();
+            $table->string('private_ip')->nullable();
             $table->string('lat')->nullable();
             $table->string('long')->nullable();
             $table->string('location')->nullable();   
@@ -27,6 +28,8 @@ class CreateAgentsTable extends Migration
             $table->string('machine')->nullable();
             $table->string('platform')->nullable();
             $table->string('Country')->nullable();
+            $table->text('disks')->nullable();
+            $table->text('bios_serial_numbers')->nullable();
             $table->string('Organization')->nullable();
             $table->integer('organization_id')->nullable();
             $table->string('status')->nullable();

@@ -12,6 +12,18 @@ use Stevebauman\Location\Facades\Location;
 
 class RabbitMQService
 {
+
+    function __construct()
+    {
+        $connection = new AMQPStreamConnection(env('MQ_HOST'), env('MQ_PORT'), env('MQ_USER'), env('MQ_PASS'), env('MQ_VHOST'));
+        $channel = $connection->channel();
+
+        $channel->queue_declare('sessions', false, false, false, false);
+
+        $channel->close();
+        $connection->close();
+
+    }
     public function publish($message, $queue)
     {
         $connection = new AMQPStreamConnection(env('MQ_HOST'), env('MQ_PORT'), env('MQ_USER'), env('MQ_PASS'), env('MQ_VHOST'));
@@ -25,7 +37,7 @@ class RabbitMQService
         $channel->close();
         $connection->close();
     }
-    public function consume()
+    public function report()
     {
         $connection = new AMQPStreamConnection(env('MQ_HOST'), env('MQ_PORT'), env('MQ_USER'), env('MQ_PASS'), env('MQ_VHOST'));
         $channel = $connection->channel();
@@ -40,7 +52,7 @@ class RabbitMQService
 
             if ($data["type"] == 'register') {
 
-                $agent = agents::where('agent_code','=',$data['aid'])->first(); 
+                $agent = agents::where('agent_code', '=', $data['aid'])->first();
                 if ($agent) {
                     $agent->ipaddress = $data['ipaddress'];
                     $agent->machine_name = $data['machine_name'];
@@ -64,15 +76,14 @@ class RabbitMQService
 
                     $agent->status = "active";
                     $agent->save();
-                }else{
+                } else {
                     return response()->json(['error' => "agent not found"])->setStatusCode(400);
                 }
 
-            }
-            elseif($data["type"] == 'report'){
+            } elseif ($data["type"] == 'report') {
 
                 $analytics = new Analytics;
-              
+
                 $analytics->session_id = $data['test-name'];
                 $analytics->avg_down = $data['avg-downlink-time(ms)'];
                 $analytics->avg_jitter = $data['avg-jitter(ms)'];
@@ -97,9 +108,9 @@ class RabbitMQService
         };
         $channel->queue_declare('reporting', false, false, false, false);
         $channel->basic_consume('reporting', '', false, true, false, false, $callback);
-        echo 'Waiting for new message on test_queue', " \n";
+        echo 'Waiting for new message on reporting', " \n";
 
-       
+
         $isConsuming = true;
         while ($isConsuming) {
             $channel->wait();
@@ -108,5 +119,65 @@ class RabbitMQService
         $connection->close();
 
     }
+
+
+
+
+    public function register()
+    {
+        $connection = new AMQPStreamConnection(env('MQ_HOST'), env('MQ_PORT'), env('MQ_USER'), env('MQ_PASS'), env('MQ_VHOST'));
+        $channel = $connection->channel();
+        $callback = function ($msg) {
+            echo ' [x] Received ', $msg->body, "\n";
+            $jsonString = str_replace("'", '"', $msg->body);
+            $data = json_decode($jsonString, true);
+
+
+            $agent = new agents();
+            $agent->agent_code = $data['aid'];
+            $agent->ipaddress = $data['public_ipaddress'];
+            $agent->private_ip = $data['private_ipaddress'];
+            $agent->machine_name = $data['machine_name'];
+            $agent->arch = $data['arch'];
+            $agent->processor = $data['processor'];
+            $agent->machine = $data['machine'];
+            $agent->platform = $data['platform'];
+            try {
+                $loc = Location::get($data['public_ipaddress']);
+                $agent->lat = $loc->latitude;
+                $agent->long = $loc->longitude;
+                $agent->location = $loc->cityName;
+                $agent->Country = $loc->countryName;
+            } catch (\Exception $e) {
+
+            }
+            $agent->bios_serial_numbers = serialize($data['bios_serial_numbers']);
+            $agent->disks = serialize($data['disks']);
+            $agent->os = $data['os'];
+            $agent->status = "pending";
+            $agent->type = $data['type'];
+            $agent->save();
+
+
+
+
+        };
+        $channel->queue_declare('register', false, false, false, false);
+        $channel->basic_consume('register', '', false, true, false, false, $callback);
+        echo 'Waiting for new message on register', " \n";
+
+
+        $isConsuming = true;
+        while ($isConsuming) {
+            $channel->wait();
+        }
+        $channel->close();
+        $connection->close();
+
+    }
+
+
+
+
 
 }

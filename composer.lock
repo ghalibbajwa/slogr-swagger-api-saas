@@ -4,8 +4,47 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6618a553f95b8880131ea540db63cdaa",
+    "content-hash": "c3d7a67de527de67aafba635d3b6ac11",
     "packages": [
+        {
+            "name": "akbansa/parallel-processor",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/akbansa/parallel-processing.git",
+                "reference": "f41f28a15a695d41f16a115955f292390daa6dc4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/akbansa/parallel-processing/zipball/f41f28a15a695d41f16a115955f292390daa6dc4",
+                "reference": "f41f28a15a695d41f16a115955f292390daa6dc4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.31",
+                "symfony/process": ">=3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Akbansa\\LaravelParallelProcessor\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Anshul Bansal",
+                    "email": "bansalanshul11@yahoo.com"
+                }
+            ],
+            "description": "Parallel Processor will help you do run commands for parallel execution",
+            "support": {
+                "issues": "https://github.com/akbansa/parallel-processing/issues",
+                "source": "https://github.com/akbansa/parallel-processing/tree/v1.0"
+            },
+            "abandoned": true,
+            "time": "2020-05-01T16:15:55+00:00"
+        },
         {
             "name": "composer/ca-bundle",
             "version": "1.3.6",
