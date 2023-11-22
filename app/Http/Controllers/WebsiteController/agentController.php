@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\WebsiteController;
 
+use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,6 +14,8 @@ use App\asn_table;
 use App\Services\RabbitMQService;
 use Illuminate\Support\Facades\Crypt;
 use App\Organization;
+use App\sessions;
+
 
 class agentController extends Controller
 {
@@ -269,7 +272,7 @@ class agentController extends Controller
 
             if ($validator->fails()) {
 
-                return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
+                return response()->json(['error' => $validator->errors()->first()])->setStatusCode(400);
             }
 
 
@@ -381,7 +384,7 @@ class agentController extends Controller
 
         if ($validator->fails()) {
 
-            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(400);
         }
 
         $agent = new agents;
@@ -450,5 +453,27 @@ class agentController extends Controller
 
         return response($request->all());
 
+    }
+
+
+    public function referenceSessions(Request $request){
+        $sessions = sessions::where('server','=',$request->aid)->select('client', 'id')->get();
+        
+
+        $agents=[];
+        foreach( $sessions as $session ){
+            try{
+            $curr=agents::find($session->client);
+            $curr->session_id= $session->id;
+            array_push( $agents, $curr);
+            }
+            catch(Exception $e){
+                continue;
+            }
+        }
+
+
+        return response()->json(['sessions' => $agents])->setStatusCode(200);
+      
     }
 }

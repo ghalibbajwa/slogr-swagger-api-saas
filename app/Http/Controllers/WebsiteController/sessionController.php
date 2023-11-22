@@ -6,6 +6,7 @@ namespace App\Http\Controllers\WebsiteController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Validator;
 use App\sessions;
 use App\profiles;
@@ -18,7 +19,7 @@ use App\alerts;
 use App\Services\RabbitMQService;
 use Illuminate\Routing\UrlGenerator;
 use Crypt;
-
+use Illuminate\Routing\UrlGenerator;
 
 
 
@@ -64,21 +65,71 @@ class sessionController extends Controller
      * )
      */
 
-    public function index()
+    public function index(Request $request)
     {
-        $sessions = sessions::all();
-        $agents = agents::all();
-        $profiles = profiles::all();
-        $pros = [];
 
-        foreach ($profiles as $pro) {
-            $pros[$pro->id] = $pro;
+        $page = 1;
+        $size = 10;
+        if ($request->page) {
+            $page = $request->page;
+        }
+        if ($request->size) {
+            $size = $request->size;
         }
 
-        $data['agents'] = $agents;
-        $data['sessions'] = $sessions;
-        $data['profiles'] = $profiles;
-        $data['pros'] = $pros;
+
+
+        $next = $page + 1;
+        $prev = null;
+        if ($page != 1) {
+            $prev = $page - 1;
+        }
+
+
+        $sessions = sessions::orderBy('created_at', 'desc')->get();
+
+        if ($request->c_name) {
+            $c_name = $request->c_name;
+            $filteredAgents = $sessions->filter(function ($sessions) use ($c_name) {
+                return Str::contains($sessions->c_name, $c_name);
+            });
+            $sessions = $filteredAgents;
+        }
+
+
+
+        if ($request->s_name) {
+            $s_name = $request->s_name;
+            $filteredAgents = $sessions->filter(function ($sessions) use ($s_name) {
+                return Str::contains($sessions->s_name, $s_name);
+            });
+            $sessions = $filteredAgents;
+        }
+
+
+
+        if ($request->p_name) {
+            $p_name = $request->p_name;
+            $filteredAgents = $sessions->filter(function ($sessions) use ($p_name) {
+                return Str::contains($sessions->p_name, $p_name);
+            });
+            $sessions = $filteredAgents;
+        }
+
+
+        $sessionsarray = $sessions->toArray();
+
+        $offset = ($page - 1) * $size;
+        $sessionsForPagew = array_slice($sessionsarray, $offset, $size);
+
+
+        $data['count'] = count($sessionsarray);
+        $data['next'] = $next;
+        $data['prev'] = $prev;
+        $data['page-size'] = $size;
+        $data['sessions'] = $sessionsForPagew;
+
+
         return response()->json(['data' => $data])->setStatusCode(200);
 
     }
@@ -216,7 +267,7 @@ class sessionController extends Controller
         // dd($validator->fails()); 
         if ($validator->fails()) {
 
-            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(400);
 
         }
 
@@ -305,7 +356,7 @@ class sessionController extends Controller
         if ($session) {
 
             $session->delete();
-            return redirect()->back()->with('a_status', 'success');
+            return response()->json(['success' => "session deleted"])->setStatusCode(200);
 
         } else {
             return response()->json(['error' => "Session not found"])->setStatusCode(400);
@@ -395,4 +446,122 @@ class sessionController extends Controller
 
 
     }
+
+
+
+    public function sessiondetail(Request $request)
+    {
+
+        $session = sessions::find($request->sid);
+
+        if ($session) {
+            $client = agents::find($session->client);
+            if ($client) {
+                $server = agents::find($session->server);
+                if ($server) {
+
+                    $analytic = analytics::where('session_id', '=', $request->sid)->orderBy('created_at', 'desc')->take(100)->get();
+                    $rtt = [];
+                    $up = [];
+                    $down = [];
+
+                    foreach ($analytic as $lits) {
+                        array_push($rtt, ["value"=>$lits->avg_rtt, "date"=>$lits->created_at]);
+                        array_push($up, ["value"=>$lits->avg_up, "date"=>$lits->created_at]);
+                        array_push($down, ["value"=>$lits->avg_down, "date"=>$lits->created_at]);
+                    }
+
+
+                    $data['client'] = $client;
+                    $data['server'] = $server;
+                    $data['rtt'] = $rtt;
+                    $data['uplink'] = $up;
+                    $data['downlink'] = $down;
+
+                    return response()->json(['data' => $data])->setStatusCode(200);
+
+                } else {
+                    return response()->json(['error' => "server data not found"])->setStatusCode(400);
+                }
+            } else {
+                return response()->json(['error' => "client data not found"])->setStatusCode(400);
+            }
+        } else {
+            return response()->json(['error' => "session not found"])->setStatusCode(400);
+        }
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+    public function sessionmetrics(Request $request)
+    {
+
+        $session = sessions::find($request->sid);
+
+        if ($session) {
+            $client = agents::find($session->client);
+            if ($client) {
+                $server = agents::find($session->server);
+                if ($server) {
+
+                    $analytic = analytics::where('session_id', '=', $request->sid)->get();
+                    $rtt = [];
+                    $up = [];
+                    $down = [];
+
+                    foreach ($analytic as $lits) {
+                        array_push($rtt, ["value"=>$lits->avg_rtt, "date"=>$lits->created_at]);
+                        array_push($up, ["value"=>$lits->avg_up, "date"=>$lits->created_at]);
+                        array_push($down, ["value"=>$lits->avg_down, "date"=>$lits->created_at]);
+                    }
+
+
+
+                    if($request->metric="uplink"){
+                        $data['uplink'] = $up;
+                    }
+                    elseif($request->metric="rtt"){
+                        $data['rtt'] = $rtt;
+                    }
+                    elseif($request->metric="downlink"){
+                        $data['downlink'] = $down;
+                    }
+                    
+                  
+                  
+
+                    return response()->json(['data' => $data])->setStatusCode(200);
+
+                } else {
+                    return response()->json(['error' => "server data not found"])->setStatusCode(400);
+                }
+            } else {
+                return response()->json(['error' => "client data not found"])->setStatusCode(400);
+            }
+        } else {
+            return response()->json(['error' => "session not found"])->setStatusCode(400);
+        }
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
 }

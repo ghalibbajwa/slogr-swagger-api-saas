@@ -74,51 +74,47 @@ class analyticController extends Controller
      *     )
      * )
      */
-    function index($sid)
+    function index(Request $request)
     {
-        $session = sessions::find($sid);
-        $client = agents::find($session->client);
-        $server = agents::find($session->server);
-        $profile = profiles::find($session->profile);
-        $rtt = [];
-
-        $analytic = analytics::where('session_id', '=', $sid)->orderBy('updated_at', 'DESC')->get();
-
-        $rtt = array();
-        $up = array();
-        $down = array();
-        $count = 0;
-        $date = Carbon::now();
-
-        foreach ($analytic as $an) {
-            $up[$count] = [
-                'date' => strtotime($date),
-                'value' => $an->avg_up,
-            ];
-            $down[$count] = [
-                'date' => strtotime($date),
-                'value' => $an->avg_down,
-            ];
-
-            $rtt[$count] = [
-                'date' => strtotime($date),
-                'value' => $an->avg_rtt,
-            ];
-            $date->addDay();
-            $count += 1;
-
+        $page = 1;
+        $size = 10;
+        if ($request->page) {
+            $page = $request->page;
+        }
+        if ($request->size) {
+            $size = $request->size;
         }
 
-        // dd($analytic);
 
-        $data['analytic'] = $analytic;
-        $data['client'] = $client;
-        $data['server'] = $server;
-        $data['rtt'] = $rtt;
-        $data['up'] = $up;
-        $data['down'] = $down;
-        $data['profile'] = $profile;
+
+        $next = $page + 1;
+        $prev = null;
+        if ($page != 1) {
+            $prev = $page - 1;
+        }
+
+        $analytic = analytics::where('session_id', '=', $request->sid)->get();
+        
+       
+
+
+
+        $analytic = $analytic->toArray();
+        
+        $offset = ($page - 1) * $size;
+        $analyticsforpage = array_slice($analytic, $offset, $size);
+
+
+        $data['count'] = count($analytic);
+        $data['next'] = $next;
+        $data['prev'] = $prev;
+        $data['page-size'] = $size;
+        $data['analytics'] = $analyticsforpage;
+        
+
         return response()->json(['data' => $data])->setStatusCode(200);
+        
+
     }
 
 

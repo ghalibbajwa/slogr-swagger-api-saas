@@ -49,7 +49,59 @@ Route::get('/mq2', [agentController::class, 'consume']);
 
 
 
-Route::group(['middleware' => ['auth:api']], function () {
+Route::group(['middleware' => ['auth:api']] ,function () {
+  
+     
+    //    dd(Auth::user());
+        // if (Auth::user()->roles->pluck('name')->toArray()[0] == "admin") {
+
+            Route::post('/register', [AuthController::class, 'register']);
+            Route::post('assign', 'Api\AuthController@assign');
+
+
+        // } 
+        // if (Auth::user()->roles->pluck('name')->toArray()[0] == "guest") {
+            
+        // }
+       
+        Route::get('/groups', [groupControlller::class, 'index']);
+        Route::get('/agents', [agentController::class, 'index']);
+        Route::get('/cluster', [homeController::class, 'getCluster']);
+        Route::get('/links', [homeController::class, 'getLinks']);
+        Route::get('/agentlinks', [homeController::class, 'agentLinks']);
+        Route::get('/alerts', [alertController::class, 'index']);
+        Route::get('/data', [dataController::class, 'index']);
+
+        // Route::get('/down/{id}',  [agentController::class, 'getDownload']);
+        Route::get('/sessions', [sessionController::class, 'index']);
+        Route::get('/getsession', [sessionController::class, 'sessiondetail']);
+        Route::get('/getmetrics', [sessionController::class, 'sessionmetrics']);
+        Route::get('/profiles', [profileController::class, 'index']);
+        Route::get('/push/{id}', [profileController::class, 'push']);
+        Route::get('/ip', [agentController::class, 'get_ip']);
+        Route::get('/analytics', [analyticController::class, 'index']);
+        Route::get('/map', [homeController::class, 'index']);
+        Route::get('/agentdata/{id}/{profile}', [analyticController::class, 'agentdata']);
+        Route::get('/agentlogs/{id}', [analyticController::class, 'agentlogs']);
+
+
+
+        Route::get('/getip', function () {
+            return response(url(''));
+        });
+        Route::post('add-agent', [agentController::class, 'add_agent']);
+        Route::get('/get-ref-sessions', [agentController::class, 'referenceSessions']);
+        Route::post('edit-agent', [agentController::class, 'edit_agent']);
+        Route::post('add-session', [sessionController::class, 'store']);
+        Route::post('add-profile', [profileController::class, 'store']);
+        Route::post('add-alert', [alertController::class, 'store']);
+
+
+
+        Route::post('delete-agent', [agentController::class, 'delete']);
+        Route::post('delete-session', [sessionController::class, 'delete']);
+        Route::post('delete-profile', [profileController::class, 'delete']);
+
 
 
     Route::get('/organizations', [organizationController::class, 'index'])->middleware('checkPermission:view_organizations');
@@ -94,8 +146,16 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('send-report', [sessionController::class, 'report'])->middleware('checkPermission:send_report');
     Route::post('register_agent', [agentController::class, 'register'])->middleware('checkPermission:register_agent');
     
-    Route::post('add-group', [groupControlller::class, 'store'])->middleware('checkPermission:add_group');
-    Route::post('get-group', [groupControlller::class, 'getdata'])->middleware('checkPermission:get_group');
+ 
+
+
+        Route::post('add-group', [groupControlller::class, 'store'])->middleware('checkPermission:add_group');;
+        Route::post('delete-group', [groupControlller::class, 'remove']);
+        Route::post('edit-group', [groupControlller::class, 'edit']);
+        
+        Route::get('get-group/{id}', [groupControlller::class, 'getdata'])->middleware('checkPermission:get_group');;
+
+        Route::get('/sch', [schedularController::class, 'schedule']);
 
 
 

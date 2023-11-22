@@ -8,6 +8,7 @@ use App\agents;
 use App\groups;
 use App\sessions;
 use App\profiles;
+use Validator;
 
 
 class groupControlller extends Controller
@@ -70,54 +71,15 @@ class groupControlller extends Controller
 
     function index()
     {
-        $agents = agents::all();
-        $sessions = sessions::all();
-        $profiles = profiles::all();
+
+
         $groups = groups::all();
 
 
-        $agent = array();
-        $count = 0;
-        foreach ($agents as $ag) {
-            $agent[$count] = [
-                'id' => $ag->id,
-                'content' => $ag->name,
-                'classses' => ["dd-nochildren"],
-            ];
 
-            $count += 1;
 
-        }
-        $session = array();
-        $count = 0;
-        foreach ($sessions as $se) {
-            $session[$count] = [
-                'id' => $se->id,
-                'content' => $se->s_name . ' to ' . $se->c_name,
-                'classses' => ["dd-nochildren"],
-            ];
 
-            $count += 1;
-
-        }
-        $profile = array();
-        $count = 0;
-        foreach ($profiles as $pr) {
-            $profile[$count] = [
-                'id' => $pr->id,
-                'content' => $pr->name,
-                'classses' => ["dd-nochildren"],
-            ];
-
-            $count += 1;
-
-        }
-
-        $data['agents'] = $agent;
-        $data['sessions'] = $session;
-        $data['profile'] = $profile;
-        $data['groups'] = $groups;
-        return response()->json(['data' => $data])->setStatusCode(200);
+        return response()->json($groups)->setStatusCode(200);
 
     }
 
@@ -180,43 +142,127 @@ class groupControlller extends Controller
     function store(Request $request)
     {
 
-        $agent = array();
-        $session = array();
-        $profile = array();
-        $data = $request->all();
-        foreach ($data as $key => $value) {
-            $name = explode('|', $key);
-            if ($name[0] == 'agent') {
-                array_push($agent, $value);
+        $validator = Validator::make($request->all(), [
+            'sessions.*' => 'required|numeric',
+            'name' => 'required|max:255',
+        ]);
+        if ($validator->fails()) {
 
-            } elseif ($name[0] == 'session') {
-                array_push($session, $value);
-            } elseif ($name[0] == 'profile') {
-                array_push($profile, $value);
-            }
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(400);
         }
-        if (empty($request->g_id)) {
-            $group = new groups;
-        } else {
-            $group = groups::find($request->g_id);
-        }
+
+       
+
+        $sessionsarray = array_map('intval', $request->sessions);
+
+
+        $group = new groups;
+
         $group->name = $request->name;
+
         $group->save();
 
-        $group->agents()->attach($agent);
-        $group->sessions()->attach($session);
-        $group->profiles()->attach($profile);
+        $group->sessions()->sync($sessionsarray);
 
-        $success['agents'] = $group->agents;
-        $success['sessions'] = $group->sessions;
-        $success['profiles'] = $group->profiles;
+        $sessions = $group->sessions;
+
+        $data = [
+            'message' => 'Sessions attached to the Group successfully',
+            'group' => $group
+        ];
 
 
-        return response()->json(['success' => $success])->setStatusCode(200);
+
+
+        return response()->json($data)->setStatusCode(200);
 
 
 
     }
+
+
+
+
+
+
+
+
+    function edit(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'sessions.*' => 'required|numeric',
+            'id' => 'required|numeric',
+            
+        ]);
+        if ($validator->fails()) {
+
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(400);
+        }
+
+       
+
+        $sessionsarray = array_map('intval', $request->sessions);
+
+
+        $group = groups::find($request->id);
+
+        if($group){
+
+            if($request->name){
+                $group->name = $request->name;
+            }
+
+            $group->save();
+
+            $group->sessions()->sync($sessionsarray);
+
+
+        }
+
+       
+
+        $data = [
+            'message' => 'Sessions updated to the Group successfully',
+            'group' => $group
+        ];
+
+
+
+
+        return response()->json($data)->setStatusCode(200);
+
+
+
+    }
+
+
+
+
+
+    public function remove(Request $request)
+    {
+
+
+        $group = groups::find($request->id);
+
+        if ($group) {
+            $group->delete();
+
+            return response()->json(['success' => "group deleted"])->setStatusCode(200);
+        } else {
+            return response()->json(['error' => "group not found"])->setStatusCode(400);
+
+        }
+
+    }
+
+
+
+
+
+
+
 
     /**
      * @OA\Post(
@@ -260,56 +306,30 @@ class groupControlller extends Controller
      * )
      */
 
-    function getdata(Request $request)
+    function getdata($id)
     {
 
-        $group = groups::find($request->id);
-        $agents = $group->agents;
-        $sessions = $group->sessions;
-        $profiles = $group->profiles;
+        $group = groups::find($id);
+        if ($group) {
+            $sessions = $group->sessions;
 
-        $agent = array();
-        $count = 0;
-        foreach ($agents as $ag) {
-            $agent[$count] = [
-                'id' => $ag->id,
-                'content' => $ag->name,
-                'classses' => ["dd-nochildren"],
+            $data = [
+                'group' => $group,
             ];
 
-            $count += 1;
+
+
+
+            return response()->json($data)->setStatusCode(200);
+
+        } else {
+            return response()->json(['error' => "group not found"])->setStatusCode(400);
 
         }
-        $session = array();
-        $count = 0;
-        foreach ($sessions as $se) {
-            $session[$count] = [
-                'id' => $se->id,
-                'content' => $se->s_name . ' to ' . $se->c_name,
-                'classses' => ["dd-nochildren"],
-            ];
-
-            $count += 1;
-
-        }
-        $profile = array();
-        $count = 0;
-        foreach ($profiles as $pr) {
-            $profile[$count] = [
-                'id' => $pr->id,
-                'content' => $pr->name,
-                'classses' => ["dd-nochildren"],
-            ];
-
-            $count += 1;
-
-        }
-        $grouped = array_merge($agent, $session, $profile);
-        $success['group'] = $group;
-        $success['grouped'] = $grouped;
 
 
-        return response()->json(['success' => $success])->setStatusCode(200);
+
+
 
     }
 }
