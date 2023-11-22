@@ -104,6 +104,8 @@ Route::group(['middleware' => ['auth:api']] ,function () {
 
         Route::post('add-group', [groupControlller::class, 'store']);
         Route::post('delete-group', [groupControlller::class, 'remove']);
+        Route::post('edit-group', [groupControlller::class, 'edit']);
+        
         Route::get('get-group/{id}', [groupControlller::class, 'getdata']);
 
         Route::get('/sch', [schedularController::class, 'schedule']);

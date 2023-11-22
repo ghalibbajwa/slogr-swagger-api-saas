@@ -184,6 +184,62 @@ class groupControlller extends Controller
 
 
 
+
+
+
+    function edit(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'sessions.*' => 'required|numeric',
+            'id' => 'required|numeric',
+            
+        ]);
+        if ($validator->fails()) {
+
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(400);
+        }
+
+       
+
+        $sessionsarray = array_map('intval', $request->sessions);
+
+
+        $group = groups::find($request->id);
+
+        if($group){
+
+            if($request->name){
+                $group->name = $request->name;
+            }
+
+            $group->save();
+
+            $group->sessions()->sync($sessionsarray);
+
+
+        }
+
+       
+
+        $data = [
+            'message' => 'Sessions updated to the Group successfully',
+            'group' => $group
+        ];
+
+
+
+
+        return response()->json($data)->setStatusCode(200);
+
+
+
+    }
+
+
+
+
+
     public function remove(Request $request)
     {
 

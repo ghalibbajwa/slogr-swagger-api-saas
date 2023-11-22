@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\sessions;
 use App\groups;
 use Validator;
+use DB;
 
 class homeController extends Controller
 {
@@ -226,14 +227,13 @@ class homeController extends Controller
     }
 
     function getLinks(Request $request)
-    {   
+    {
 
         if ($request->group) {
             $group = groups::find($request->group);
 
             $sessions = $group->sessions;
-        }
-        else{
+        } else {
 
             $sessions = sessions::all();
         }
@@ -284,21 +284,75 @@ class homeController extends Controller
 
 
 
+        if ($request->profiles) {
+
+            $profiles = profiles::all();
+            $analytics = Analytics::whereIn('id', function ($query) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('analytics')
+                    ->groupBy('session_id');
+            })->get();
+
+            $analytics = collect($analytics)->keyBy('session_id');
 
 
-        foreach ($sessions as $se) {
-            try {
-                $server = $agents[$se->server];
-                $client = $agents[$se->client];
-                $links[$count] = [
-                    'coordinates' => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
-                    'color' => 'blue',
-                    'session_id' => $se->id
-                ];
+            foreach ($sessions as $se) {
 
-                $count += 1;
-            } catch (\Exception $e) {
-                continue;
+                $slas = [];
+                foreach ($profiles as $pro) {
+                    try {
+                        $metric = $analytics[$se->id];
+
+                        if ($metric->avg_rtt > $pro->max_rtt || $metric->avg_uplink > $pro->max_uplink || $metric->avg_downlink > $pro->max_downlink) {
+                            $slas[$pro->name] = "red";
+                        } else {
+                            $slas[$pro->name] = "green";
+                        }
+                    } catch (\Exception $e) {
+                        continue;
+                    }
+
+
+                }
+
+                try {
+                    $server = $agents[$se->server];
+                    $client = $agents[$se->client];
+                    $links[$count] = [
+                        'coordinates' => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
+                        'color' => 'blue',
+                        'session_id' => $se->id,
+
+                    ];
+                    $links[$count] = collect($links[$count])->merge($slas)->all();
+
+
+
+                    $count += 1;
+                } catch (\Exception $e) {
+                    continue;
+                }
+            }
+
+
+        } else {
+
+
+
+            foreach ($sessions as $se) {
+                try {
+                    $server = $agents[$se->server];
+                    $client = $agents[$se->client];
+                    $links[$count] = [
+                        'coordinates' => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
+                        'color' => 'blue',
+                        'session_id' => $se->id
+                    ];
+
+                    $count += 1;
+                } catch (\Exception $e) {
+                    continue;
+                }
             }
         }
 
@@ -331,10 +385,10 @@ class homeController extends Controller
             // Get unique values from the collection
             $uniqueIdsArray = $uniqueIdsCollection->unique()->values()->all();
 
-            
+
 
             $agents = agents::whereIn('id', $uniqueIdsArray)->get();
-        
+
         }
 
 
