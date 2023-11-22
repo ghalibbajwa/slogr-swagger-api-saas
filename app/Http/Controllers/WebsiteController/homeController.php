@@ -287,10 +287,12 @@ class homeController extends Controller
         if ($request->profiles) {
 
             $profiles = profiles::all();
-            $analytics = Analytics::whereIn('id', function ($query) {
+            $limit = 4 * count($sessions);
+            $analytics = Analytics::whereIn('id', function ($query) use ($limit) {
                 $query->select(DB::raw('MAX(id)'))
                     ->from('analytics')
-                    ->groupBy('session_id');
+                    ->groupBy('session_id')
+                    ->limit($limit);
             })->get()->keyBy('session_id');
 
 
