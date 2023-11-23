@@ -32,10 +32,6 @@ class permissionController extends Controller
 
 
 
-        $trimmedString = trim($request->pid, '{}');
-        $arrayValues = explode(',', $trimmedString);
-
-        $permissionarray = array_map('intval', $arrayValues);
         $role = Role::find($request->rid);
 
         if (!$role) {
@@ -45,7 +41,7 @@ class permissionController extends Controller
 
         $currentPermissions = $role->permissions->pluck('id')->toArray();
 
-        $permissionsToKeep =  array_merge($currentPermissions, $permissionarray);
+        $permissionsToKeep =  array_merge($currentPermissions, $request->pid);
 
 
         $role->permissions()->sync($permissionsToKeep);
@@ -74,10 +70,6 @@ class permissionController extends Controller
         }
 
 
-        $trimmedString = trim($request->pid, '{}');
-        $arrayValues = explode(',', $trimmedString);
-
-        $permissionarray = array_map('intval', $arrayValues);
         $role = Role::find($request->rid);
 
         if (!$role) {
@@ -87,7 +79,7 @@ class permissionController extends Controller
 
         $currentPermissions = $role->permissions->pluck('id')->toArray();
 
-        $permissionsToKeep = array_diff($currentPermissions, $permissionarray);
+        $permissionsToKeep = array_diff($currentPermissions, $request->pid);
 
 
         $role->permissions()->sync($permissionsToKeep);

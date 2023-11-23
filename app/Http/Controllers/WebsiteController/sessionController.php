@@ -497,7 +497,10 @@ class sessionController extends Controller
 
 
 
-
+    public function sessionnames(){
+        $session = sessions::select('id', 'c_name', 's_name')->get();
+        return response()->json($session)->setStatusCode(200);
+    }
 
 
     public function sessionmetrics(Request $request)

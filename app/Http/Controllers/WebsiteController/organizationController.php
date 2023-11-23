@@ -58,20 +58,20 @@ class organizationController extends Controller
     public function assign(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'uid' => 'required|numeric',
-            'oid' => 'required|numeric',
+            'email' => 'required|email',
         ]);
         if ($validator->fails()) {
 
-            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(300);
+            return response()->json(['error' => $validator->errors()->first()])->setStatusCode(400);
         }
 
 
 
 
 
-        $user = User::find($request->uid);
-        $organization = Organization::find($request->oid);
+        $user = User::where('email','=',$request->email)->first();
+
+        $organization = Organization::find(auth()->user()->organization_id);
 
         if (!$user) {
             return response()->json(['error' => "User not found"])->setStatusCode(400);

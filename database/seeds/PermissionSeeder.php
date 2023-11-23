@@ -55,7 +55,8 @@ class PermissionSeeder extends Seeder
             'add_group',
             'delete_group',
             'edit_group',
-            'get_group'
+            'get_group',
+            'sessionnames'
         ];
 
         foreach ($permissions as $permission) {
@@ -81,6 +82,8 @@ class PermissionSeeder extends Seeder
             'password' => Hash::make('password'),
             "organization_id" => $organization->id
         ]);
+
+        
 
         $allPermissions = Permission::all();
         $role->permissions()->sync($allPermissions);

@@ -98,7 +98,7 @@ class AuthController extends Controller
         $data['password'] = Hash::make($data['password']);
         $user = User::create($data);
         $success['token'] = $user->createToken('authToken')->accessToken;
-        $success['name'] = $user->name;
+        $success['user'] = $user;
         return response()->json(['success' => $success]);
     }
     /**
@@ -188,7 +188,7 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
         if (!auth()->guard('web')->attempt($validator)) {
-            return response()->json(['error' => 'Unauthorised'], 401);
+            return response()->json(['error' => 'Unauthenticated'], 422);
         } else {
             // dd(auth()->guard('web')->user());
             $success['token'] = auth()->guard('web')->user()->createToken('authToken')->accessToken;

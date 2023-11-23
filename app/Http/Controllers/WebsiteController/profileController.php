@@ -61,7 +61,7 @@ class profileController extends Controller
      *                 example="Profile 1"
      *             ),
      *             @OA\Property(
-     *                 property="p_size",
+     *                 property="p-size",
      *                 type="integer",
      *                 description="Packet size",
      *                 example="1500"
@@ -73,19 +73,19 @@ class profileController extends Controller
      *                 example="10"
      *             ),
      *             @OA\Property(
-     *                 property="n_packets",
+     *                 property="n-packets",
      *                 type="integer",
      *                 description="Number of packets",
      *                 example="100"
      *             ),
      *             @OA\Property(
-     *                 property="p_interval",
+     *                 property="p-interval",
      *                 type="integer",
      *                 description="Packet interval",
      *                 example="10"
      *             ),
      *             @OA\Property(
-     *                 property="w_time",
+     *                 property="w-time",
      *                 type="integer",
      *                 description="Wait time",
      *                 example="5"
@@ -97,31 +97,31 @@ class profileController extends Controller
      *                 example="46"
      *             ),
      *             @OA\Property(
-     *                 property="max_loss",
+     *                 property="max-loss",
      *                 type="integer",
      *                 description="Maximum loss",
      *                 example="5"
      *             ),
      *             @OA\Property(
-     *                 property="max_down",
+     *                 property="max-down",
      *                 type="integer",
      *                 description="Maximum downlink time",
      *                 example="50"
      *             ),
      *             @OA\Property(
-     *                 property="max_up",
+     *                 property="max-up",
      *                 type="integer",
      *                 description="Maximum uplink time",
      *                 example="50"
      *             ),
      *             @OA\Property(
-     *                 property="max_jitter",
+     *                 property="max-jitter",
      *                 type="integer",
      *                 description="Maximum jitter",
      *                 example="10"
      *             ),
      *             @OA\Property(
-     *                 property="max_rtt",
+     *                 property="max-rtt",
      *                 type="integer",
      *                 description="Maximum RTT",
      *                 example="100"
@@ -179,13 +179,23 @@ class profileController extends Controller
             'p_interval' => 'required|numeric',
             'w_time' => 'required|numeric',
             'dscp' => 'required|numeric',
-            'max_loss' => 'required|numeric',
-            'max_down' => 'required|numeric',
-            'max_up' => 'required|numeric',
-            'max_jitter' => 'required|numeric',
-            'max_rtt' => 'required|numeric'
+            'rtt-g' => 'required|numeric',
+            'rtt-r' => 'required|numeric',
+            'uplink-g' => 'required|numeric',
+            'uplink-r' => 'required|numeric',
+            'downlink-g' => 'required|numeric',
+            'downlink-r' => 'required|numeric',
+            'delay-g' => 'required|numeric',
+            'delay-r' => 'required|numeric',
+            'downlink-bw-g' => 'required|numeric',
+            'downlink-bw-r' => 'required|numeric',
+            'uplink-bw-g' => 'required|numeric',
+            'uplink-bw-r' => 'required|numeric',
+            'jitter-g' => 'required|numeric',
+            'jitter-r' => 'required|numeric',
+            'loss-g' => 'required|numeric',
+            'loss-r' => 'required|numeric',
         ]);
-
 
 
         // dd($validator->fails()); 
@@ -196,24 +206,24 @@ class profileController extends Controller
 
         if ($request->edit == true) {
             $profile = profiles::find($request->id);
+            if(!$profile){
+                return response()->json(['error' => "profile not found"] )->setStatusCode(400);
+            }
         } else {
 
             $profile = new profiles;
         }
 
-        $profile->name = $request->name;
-        $profile->count = $request->serve;
-        $profile->count = $request->count;
-        $profile->n_packets = $request->n_packets;
-        $profile->p_interval = $request->p_interval;
-        $profile->w_time = $request->w_time;
-        $profile->dscp = $request->dscp;
-        $profile->max_loss = $request->max_loss;
-        $profile->max_uplink = $request->max_up;
-        $profile->p_size = $request->p_size;
-        $profile->max_downlink = $request->max_down;
-        $profile->max_rtt = $request->max_rtt;
-        $profile->max_jitter = $request->max_jitter;
+        $fields = [
+            'name', 'count', 'n_packets', 'p_interval', 'w_time', 'dscp','p_size',
+            'rtt-g', 'rtt-r', 'uplink-g', 'uplink-r', 'downlink-g', 'downlink-r',
+            'delay-g', 'delay-r', 'downlink-bw-g', 'downlink-bw-r', 'uplink-bw-g', 'uplink-bw-r',
+            'jitter-g', 'jitter-r', 'loss-g', 'loss-r'
+        ];
+
+        foreach ($fields as $field) {
+            $profile->{$field} = $request->{$field};
+        }
 
 
         $profile->save();
@@ -312,18 +322,18 @@ class profileController extends Controller
                 $url = $ag->ipaddress . ":5000/create-profile";
                 $data = [
                     'name' => $profile->name,
-                    'n_packets' => $profile->n_packets,
-                    'intervel' => $profile->p_interval,
-                    'p_size' => $profile->p_size,
-                    'w_time' => $profile->w_time,
+                    'n-packets' => $profile->n-packets,
+                    'intervel' => $profile->p-interval,
+                    'p-size' => $profile->p-size,
+                    'w-time' => $profile->w-time,
                     'dscp' => $profile->dscp,
-                    'max_loss' => $profile->max_loss,
-                    'max_up' => $profile->max_uplink,
-                    'max_down' => $profile->max_downlink,
-                    'max_rtt' => $profile->max_rtt,
-                    'max_jitter' => $profile->max_jitter,
+                    'max-loss' => $profile->max-loss,
+                    'max-up' => $profile->max-uplink,
+                    'max-down' => $profile->max-downlink,
+                    'max-rtt' => $profile->max-rtt,
+                    'max-jitter' => $profile->max-jitter,
                 ];
-                $jsonData = json_encode($data);
+                $jsonData = json-encode($data);
 
                 try {
                     $response = $client->post($url, [

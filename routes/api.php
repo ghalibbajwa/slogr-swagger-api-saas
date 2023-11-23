@@ -56,6 +56,9 @@ Route::group(['middleware' => ['auth:api']], function () {
 
 
     Route::get('/getsession', [sessionController::class, 'sessiondetail'])->middleware('checkPermission:sessiondetail');
+    // Route::get('/sessionnames', [sessionController::class, 'sessionnames'])->middleware('checkPermission:sessionnames');
+    Route::get('/sessionnames', [sessionController::class, 'sessionnames']);
+
     Route::get('/getmetrics', [sessionController::class, 'sessionmetrics'])->middleware('checkPermission:sessionmetrics');
     Route::get('/analytics', [analyticController::class, 'index'])->middleware('checkPermission:view_analytics');
     Route::get('/get-ref-sessions', [agentController::class, 'referenceSessions'])->middleware('checkPermission:referenceSessions');
