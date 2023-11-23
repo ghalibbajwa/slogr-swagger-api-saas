@@ -179,22 +179,22 @@ class profileController extends Controller
             'p_interval' => 'required|numeric',
             'w_time' => 'required|numeric',
             'dscp' => 'required|numeric',
-            'rtt-g' => 'required|numeric',
-            'rtt-r' => 'required|numeric',
-            'uplink-g' => 'required|numeric',
-            'uplink-r' => 'required|numeric',
-            'downlink-g' => 'required|numeric',
-            'downlink-r' => 'required|numeric',
-            'delay-g' => 'required|numeric',
-            'delay-r' => 'required|numeric',
-            'downlink-bw-g' => 'required|numeric',
-            'downlink-bw-r' => 'required|numeric',
-            'uplink-bw-g' => 'required|numeric',
-            'uplink-bw-r' => 'required|numeric',
-            'jitter-g' => 'required|numeric',
-            'jitter-r' => 'required|numeric',
-            'loss-g' => 'required|numeric',
-            'loss-r' => 'required|numeric',
+            'rtt_g' => 'required|numeric',
+            'rtt_r' => 'required|numeric',
+            'uplink_g' => 'required|numeric',
+            'uplink_r' => 'required|numeric',
+            'downlink_g' => 'required|numeric',
+            'downlink_r' => 'required|numeric',
+            'delay_g' => 'required|numeric',
+            'delay_r' => 'required|numeric',
+            'downlink_bw_g' => 'required|numeric',
+            'downlink_bw_r' => 'required|numeric',
+            'uplink_bw_g' => 'required|numeric',
+            'uplink_bw_r' => 'required|numeric',
+            'jitter_g' => 'required|numeric',
+            'jitter_r' => 'required|numeric',
+            'loss_g' => 'required|numeric',
+            'loss_r' => 'required|numeric',
         ]);
 
 
@@ -221,9 +221,18 @@ class profileController extends Controller
             'jitter-g', 'jitter-r', 'loss-g', 'loss-r'
         ];
 
-        foreach ($fields as $field) {
-            $profile->{$field} = $request->{$field};
+        $fields2 = [
+            'name', 'count', 'n_packets', 'p_interval', 'w_time', 'dscp','p_size',
+            'rtt_g', 'rtt_r', 'uplink_g', 'uplink_r', 'downlink_g', 'downlink_r',
+            'delay_g', 'delay_r', 'downlink_bw_g', 'downlink_bw_r', 'uplink_bw_g', 'uplink_bw_r',
+            'jitter_g', 'jitter_r', 'loss_g', 'loss_r'
+        ];
+
+        for ($i = 0; $i < count($fields); $i++) {
+            $profile->{$fields[$i]} = $request->{$fields2[$i]};
         }
+
+       
 
 
         $profile->save();
