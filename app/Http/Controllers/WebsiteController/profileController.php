@@ -214,23 +214,18 @@ class profileController extends Controller
             $profile = new profiles;
         }
 
-        $fields = [
-            'name', 'count', 'n_packets', 'p_interval', 'w_time', 'dscp','p_size',
-            'rtt-g', 'rtt-r', 'uplink-g', 'uplink-r', 'downlink-g', 'downlink-r',
-            'delay-g', 'delay-r', 'downlink-bw-g', 'downlink-bw-r', 'uplink-bw-g', 'uplink-bw-r',
-            'jitter-g', 'jitter-r', 'loss-g', 'loss-r'
-        ];
 
-        $fields2 = [
+        $fields = [
             'name', 'count', 'n_packets', 'p_interval', 'w_time', 'dscp','p_size',
             'rtt_g', 'rtt_r', 'uplink_g', 'uplink_r', 'downlink_g', 'downlink_r',
             'delay_g', 'delay_r', 'downlink_bw_g', 'downlink_bw_r', 'uplink_bw_g', 'uplink_bw_r',
             'jitter_g', 'jitter_r', 'loss_g', 'loss_r'
         ];
 
-        for ($i = 0; $i < count($fields); $i++) {
-            $profile->{$fields[$i]} = $request->{$fields2[$i]};
+        foreach($fields as $f){
+            $profile->{$f} = $request->{$f};
         }
+
 
        
 
