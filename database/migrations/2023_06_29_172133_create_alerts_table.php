@@ -15,9 +15,13 @@ class CreateAlertsTable extends Migration
     {
         Schema::create('alerts', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('group_id');
+            $table->integer('profile_id');
+            $table->integer('sla_breach_minutes')->nullable();
+            $table->integer('sla_breach_tests')->nullable();
+            $table->integer('tests_norun')->nullable();
             $table->string('name');
-            $table->string('endpoint');
-            $table->integer('session');
+            $table->string('email');
             $table->timestamps();
         });
     }

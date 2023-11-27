@@ -256,7 +256,7 @@ class homeController extends Controller
         ];
 
         foreach ($sessions as $se) {
-            try{
+            try {
                 $server = $agents[$se->server];
                 $client = $agents[$se->client];
                 $feature = [
@@ -278,7 +278,7 @@ class homeController extends Controller
         }
 
 
-        return response()->json($featureCollection)->setStatusCode(200);
+        // return response()->json($featureCollection)->setStatusCode(200);
 
 
 
@@ -293,20 +293,33 @@ class homeController extends Controller
             // })->get()->keyBy('session_id');
 
 
-
+            $featureCollection = [
+                "type" => "FeatureCollection",
+                "crs" => [
+                    "type" => "name",
+                    "properties" => [
+                        "name" => "urn:ogc:def:crs:OGC:1.3:CRS84",
+                    ],
+                ],
+                "features" => [],
+            ];
 
             foreach ($sessions as $se) {
 
                 $slas = [];
-                foreach ($profiles as $pro) {
+                foreach ($profiles as $profile) {
                     try {
-                        $metric = Analytics::where('session_id','=',$se->id)->first();
+                        $metric = Analytics::where('session_id', '=', $se->id)->first();
 
-                        if ($metric->avg_rtt > $pro->max_rtt || $metric->avg_uplink > $pro->max_uplink || $metric->avg_downlink > $pro->max_downlink) {
-                            $slas[$pro->name] = "red";
-                        } else {
-                            $slas[$pro->name] = "green";
+                        $sla = "green";
+                        if (($metric->avg_rtt < $profile->rtt_g) || ($metric->avg_down < $profile->downlink_g) || ($metric->avg_up < $profile->uplink_g) && ($metric->avg_jitter < $profile->jitter_g)) {
+                            $slas[$profile->name] = "green";
+                        } elseif (($metric->avg_rtt > $profile->rtt_g && $metric->avg_rtt < $profile->rtt_r) || ($metric->avg_down > $profile->downlink_g && $metric->avg_down < $profile->downlink_r) || ($metric->avg_up > $profile->uplink_g && $metric->avg_up < $profile->uplink_r) && ($metric->avg_jitter > $profile->jitter_g && $metric->avg_jitter < $profile->jitter_r)) {
+                            $slas[$profile->name] = "yellow";
+                        } elseif (($metric->avg_rtt > $profile->rtt_r) || ($metric->avg_down > $profile->downlink_r) || ($metric->avg_up > $profile->uplink_r) && ($metric->avg_jitter > $profile->jitter_r)) {
+                            $slas[$profile->name] = "red";
                         }
+
                     } catch (\Exception $e) {
                         continue;
                     }
@@ -323,40 +336,57 @@ class homeController extends Controller
                         'session_id' => $se->id,
 
                     ];
-                    $links[$count] = collect($links[$count])->merge($slas)->all();
 
+                    $feature = [
+                        "type" => "Feature",
+                        "geometry" => [
+                            "type" => "LineString",
+                            "coordinates" => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
+                        ],
+                        "properties" => [
+                            'color' => 'blue',
+                            'session_id' => $se->id,
+                          
 
-
-                    $count += 1;
+                        ]
+                    ];
+                  
+                    $feature['properties'] = collect($feature['properties'])->merge($slas)->all();
+                   
                 } catch (\Exception $e) {
                     continue;
                 }
+                $featureCollection['features'][] = $feature;
             }
 
 
         } else {
-
-
-
             foreach ($sessions as $se) {
                 try {
                     $server = $agents[$se->server];
                     $client = $agents[$se->client];
-                    $links[$count] = [
-                        'coordinates' => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
-                        'color' => 'blue',
-                        'session_id' => $se->id
+                    $feature = [
+                        "type" => "Feature",
+                        "geometry" => [
+                            "type" => "LineString",
+                            "coordinates" => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
+                        ],
+                        "properties" => [
+                            'color' => 'blue',
+                            'session_id' => $se->id
+    
+                        ]
                     ];
-
-                    $count += 1;
                 } catch (\Exception $e) {
                     continue;
                 }
+                $featureCollection['features'][] = $feature;
             }
+    
         }
 
-
-        return response()->json($links);
+        return response()->json($featureCollection)->setStatusCode(200);
+       
     }
 
     function getCluster(Request $request)

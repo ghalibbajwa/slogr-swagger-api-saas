@@ -12,14 +12,11 @@ class emailController extends Controller
 {
    
 
-    public function sendTestEmail()
+    public function sendTestEmail($details,$email)
     {
-        $details = [
-            'title' => 'Mail from ItSolutionStuff.com',
-            'body' => 'This is for testing email using smtp'
-        ];
-
-        Mail::to('ghalibs911@gmail.com')->send(new MyTestMail($details));
+       
+      
+        Mail::to($email)->send(new MyTestMail($details));
     }
 
 }

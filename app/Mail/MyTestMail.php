@@ -29,8 +29,11 @@ class MyTestMail extends Mailable
      * @return $this
      */
     public function build()
-    {
-        return $this->subject('Mail from slogr.io')
-        ->view('emails.myTestMail');
+    {   
+
+        return $this->from('alerts@slogr.io', 'Alerts | Slogr.io')
+        ->subject('Alert from Slogr.io')
+        ->view('emails.mytestmail');
+     
     }
 }
