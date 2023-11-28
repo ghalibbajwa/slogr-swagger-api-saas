@@ -6,6 +6,7 @@ use App\Http\Controllers\WebsiteController\dataController;
 use App\Http\Controllers\WebsiteController\emailController;
 use App\Http\Controllers\WebsiteController\organizationController;
 use App\Http\Controllers\WebsiteController\permissionController;
+use App\Http\Controllers\WebsiteController\reportController;
 use App\Http\Controllers\WebsiteController\roleController;
 use Illuminate\Http\Request;
 
@@ -139,9 +140,13 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('delete-alert', [alertController::class, 'delete'])->middleware('checkPermission:delete_alert');
     
   
-   
-    
-   
+   #reports
+
+    Route::get('/reports',[reportController::class,'index']);
+    Route::get('get-report/{id}', [reportController::class, 'getdata']);
+    Route::post('add-report', [reportController::class, 'store']);
+    Route::post('delete-report', [reportController::class, 'remove']);
+    Route::post('edit-report', [reportController::class, 'edit']);
  
 
 
