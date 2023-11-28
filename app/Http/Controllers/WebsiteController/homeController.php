@@ -11,6 +11,7 @@ use App\sessions;
 use App\groups;
 use Validator;
 use DB;
+use App\latest_analytics;
 
 class homeController extends Controller
 {
@@ -304,12 +305,14 @@ class homeController extends Controller
                 "features" => [],
             ];
 
-            foreach ($sessions as $se) {
+            $latest_analytics= latest_analytics::all();
+            foreach ($latest_analytics as $metric) {
 
                 $slas = [];
+                
                 foreach ($profiles as $profile) {
                     try {
-                        $metric = Analytics::where('session_id', '=', $se->id)->first();
+                        
 
                         $sla = "green";
                         if (($metric->avg_rtt < $profile->rtt_g) || ($metric->avg_down < $profile->downlink_g) || ($metric->avg_up < $profile->uplink_g) && ($metric->avg_jitter < $profile->jitter_g)) {

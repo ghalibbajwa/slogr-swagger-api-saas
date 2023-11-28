@@ -34,7 +34,9 @@ class organizationController extends Controller
 
 
 
+        if(auth()->user()->organziation_id != null){
 
+        
         $organizations = new Organization;
 
         $organizations->name = $request->name;
@@ -50,6 +52,9 @@ class organizationController extends Controller
 
 
         return response()->json(['success' => $success])->setStatusCode(200);
+    }else{
+        return response()->json(['error' => "you are already a part of the organization"])->setStatusCode(300);
+    }
 
     }
 
