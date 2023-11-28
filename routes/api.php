@@ -43,9 +43,12 @@ Route::group(['middleware' => 'web'], function () {
 
 
 
+     
 
 Route::post('/login', 'Api\AuthController@login');
-Route::post('/register', [AuthController::class, 'register']);
+
+Route::post('/register', 'Api\AuthController@register');
+
 Route::get('/mail', [emailController::class, 'sendTestEmail']);
 Route::get('/sch', [schedularController::class, 'schedule']);
 // Route::get('/mq2', [agentController::class, 'consume']);
@@ -110,8 +113,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/remove-permissions', [permissionController::class, 'remove'])->middleware('checkPermission:remove_permissions');
 
 
-    #Auth
-    Route::post('/register', [AuthController::class, 'register'])->middleware('checkPermission:register');
+    // #Auth
+    // Route::post('/register', [AuthController::class, 'register'])->middleware('checkPermission:register');
 
 
     #groups
