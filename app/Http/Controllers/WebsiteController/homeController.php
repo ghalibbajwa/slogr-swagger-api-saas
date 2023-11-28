@@ -305,8 +305,16 @@ class homeController extends Controller
                 "features" => [],
             ];
 
-            $latest_analytics= latest_analytics::all();
-            foreach ($latest_analytics as $metric) {
+            // $latest_analytics= latest_analytics::all();
+            $latest_analytics = latest_analytics::whereIn('id', function ($query) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('latest_analytics')
+                    ->groupBy('session_id');
+            })->get()->keyBy('session_id');
+           
+            foreach ($sessions as $se) {
+
+                $metric = $latest_analytics[$se->id];
 
                 $slas = [];
                 
