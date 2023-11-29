@@ -176,7 +176,7 @@ class schedularController extends Controller
                 $latest_analytics = new latest_analytics();
             }
           
-            $analytics = Analytics::where('session_id', '=', $se->id)->orderBy('created_at', 'desc')->first();;
+            $analytics = Analytics::where('session_id', '=', $se->id)->latest()->first();
             $latest_analytics->session_id = $se->id;
             $latest_analytics->avg_down = $analytics->avg_down;
             $latest_analytics->avg_jitter = $analytics->avg_jitter;
