@@ -169,34 +169,34 @@ class schedularController extends Controller
         }
 
 
-        // $sessions = sessions::all();
-        // foreach ($sessions as $se) {
-        //     $latest_analytics = latest_analytics::where('session_id','=',$se->id)->first();
-        //     if($latest_analytics==null){
-        //         $latest_analytics = new latest_analytics();
-        //     }
+        $sessions = sessions::all();
+        foreach ($sessions as $se) {
+            $latest_analytics = latest_analytics::where('session_id','=',$se->id)->first();
+            if($latest_analytics==null){
+                $latest_analytics = new latest_analytics();
+            }
           
-        //     $analytics = Analytics::where('session_id', '=', $se->id)->orderBy('created_at', 'desc')->first();;
-        //     $latest_analytics->session_id = $se->id;
-        //     $latest_analytics->avg_down = $analytics->avg_down;
-        //     $latest_analytics->avg_jitter = $analytics->avg_jitter;
-        //     $latest_analytics->avg_rtt = $analytics->avg_rtt;
-        //     $latest_analytics->avg_up = $analytics->avg_up;
-        //     $latest_analytics->max_down = $analytics->max_down;
-        //     $latest_analytics->max_jitter = $analytics->max_jitter;
-        //     $latest_analytics->max_rtt = $analytics->max_rtt;
-        //     $latest_analytics->max_up = $analytics->max_up;
-        //     $latest_analytics->min_down = $analytics->min_down;
-        //     $latest_analytics->min_jitter = $analytics->min_jitter;
-        //     $latest_analytics->min_rtt = $analytics->min_rtt;
-        //     $latest_analytics->min_up = $analytics->min_up;
-        //     $latest_analytics->r_packets = $analytics->r_packets;
-        //     $latest_analytics->st_down = $analytics->st_down;
-        //     $latest_analytics->st_up = $analytics->st_up;
-        //     $latest_analytics->st_rtt = $analytics->st_rtt;
-        //     $latest_analytics->t_packets = $analytics->t_packets;
-        //     $latest_analytics->save();
-        // }
+            $analytics = Analytics::where('session_id', '=', $se->id)->orderBy('created_at', 'desc')->first();;
+            $latest_analytics->session_id = $se->id;
+            $latest_analytics->avg_down = $analytics->avg_down;
+            $latest_analytics->avg_jitter = $analytics->avg_jitter;
+            $latest_analytics->avg_rtt = $analytics->avg_rtt;
+            $latest_analytics->avg_up = $analytics->avg_up;
+            $latest_analytics->max_down = $analytics->max_down;
+            $latest_analytics->max_jitter = $analytics->max_jitter;
+            $latest_analytics->max_rtt = $analytics->max_rtt;
+            $latest_analytics->max_up = $analytics->max_up;
+            $latest_analytics->min_down = $analytics->min_down;
+            $latest_analytics->min_jitter = $analytics->min_jitter;
+            $latest_analytics->min_rtt = $analytics->min_rtt;
+            $latest_analytics->min_up = $analytics->min_up;
+            $latest_analytics->r_packets = $analytics->r_packets;
+            $latest_analytics->st_down = $analytics->st_down;
+            $latest_analytics->st_up = $analytics->st_up;
+            $latest_analytics->st_rtt = $analytics->st_rtt;
+            $latest_analytics->t_packets = $analytics->t_packets;
+            $latest_analytics->save();
+        }
 
 
 
