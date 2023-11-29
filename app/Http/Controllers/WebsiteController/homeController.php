@@ -320,8 +320,6 @@ class homeController extends Controller
                 
                 foreach ($profiles as $profile) {
                     try {
-                        
-
                         $sla = "green";
                         if (($metric->avg_rtt < $profile->rtt_g) || ($metric->avg_down < $profile->downlink_g) || ($metric->avg_up < $profile->uplink_g) && ($metric->avg_jitter < $profile->jitter_g)) {
                             $slas[$profile->name] = "green";

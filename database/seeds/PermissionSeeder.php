@@ -58,7 +58,12 @@ class PermissionSeeder extends Seeder
             'get_group',
             'sessionnames',
             'edit_alert',
-            'delete_alert'
+            'delete_alert',
+            'edit_report',
+            'delete_report',
+            'add_report',
+            'view_report',
+            'view_reports'
         ];
 
         foreach ($permissions as $permission) {

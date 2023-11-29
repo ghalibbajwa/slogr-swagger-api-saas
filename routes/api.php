@@ -142,11 +142,11 @@ Route::group(['middleware' => ['auth:api']], function () {
   
    #reports
 
-    Route::get('/reports',[reportController::class,'index']);
-    Route::get('get-report/{id}', [reportController::class, 'getdata']);
-    Route::post('add-report', [reportController::class, 'store']);
-    Route::post('delete-report', [reportController::class, 'remove']);
-    Route::post('edit-report', [reportController::class, 'edit']);
+    Route::get('/reports',[reportController::class,'index'])->middleware('checkPermission:view_reports');
+    Route::get('get-report/{id}', [reportController::class, 'getdata'])->middleware('checkPermission:view_report');
+    Route::post('add-report', [reportController::class, 'store'])->middleware('checkPermission:add_report');
+    Route::post('delete-report', [reportController::class, 'remove'])->middleware('checkPermission:delete_report');
+    Route::post('edit-report', [reportController::class, 'edit'])->middleware('checkPermission:edit_report');
  
 
 

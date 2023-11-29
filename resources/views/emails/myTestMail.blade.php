@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <html>
+@section('style')
+<!-- DataTables css -->
+<link href="{{ asset('assets/plugins/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/plugins/datatables/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+<!-- Responsive Datatable css -->
+<link href="{{ asset('assets/plugins/datatables/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+@endsection
 
 <head>
     <title>slogr.io</title>
@@ -12,7 +19,7 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 100%;
             margin: 0 auto;
             padding: 20px;
             background-color: #fff;
@@ -21,7 +28,7 @@
         }
 
         .header {
-            text-align: center;
+            
             margin-bottom: 20px;
         }
 
@@ -32,7 +39,7 @@
 
         h1 {
             color: #333;
-            text-align: center;
+            
         }
 
         p {
@@ -42,7 +49,7 @@
         }
 
         .footer {
-            text-align: center;
+            
             color: #999;
             margin-top: 30px;
         }
@@ -50,20 +57,48 @@
 </head>
 
 <body>
-    <div class="container">
+    
         <div class="header">
             <img src="https://slogr.io/wp-content/uploads/2023/06/Group-2420.png" alt="Logo">
         </div>
         <h1>{{ $details['title'] }}</h1>
-        <p>{{ $details['body'] }}</p>
-        
-        @if(isset($details['arrayData']))
+        @php
+        $colorsArray = explode(', ', $details['body']);
+        @endphp
+
+        <h6 class="card-subtitle"  >Details for the sessions SLA breached</h6>
+        <div class="table-responsive" >
+            <table id="default-datatable" class="display table table-striped table-bordered" style="text-align:center;">
+                <thead  > 
+                    <tr>
+                        <th>Client</th>
+                        <th>Server</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody  >
+                    @for($x=1; $x < count($details['sessions']); $x++) <tr>
+                        <td>{{$details['sessions'][$x]->c_name}}</td>
+                        <td>{{$details['sessions'][$x]->s_name}}</td>
+                        <td>{{ $colorsArray[$x]}}</td>
+                        </tr>
+                        @endfor
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+        <!-- @if(isset($details['arrayData']))
         <p>The array data as a string:</p>
         <p>{{ implode(", ", $details['arrayData']) }}</p>
-        @endif
+        @endif -->
 
-        <p class="footer">Thank you</p>
-    </div>
 </body>
 
 </html>
+@section('script')
+<!-- Datatable js -->
+
+@endsection
