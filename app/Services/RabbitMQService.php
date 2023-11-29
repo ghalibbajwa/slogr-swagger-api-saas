@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 use App\agents;
 use App\analytics;
 use Stevebauman\Location\Facades\Location;
-
+use App\latest_analytics;
 class RabbitMQService
 {
 
@@ -103,6 +103,31 @@ class RabbitMQService
                 $analytics->st_rtt = $data['std-dev-rtt(ms)'];
                 $analytics->t_packets = $data['total-packets'];
                 $analytics->save();
+
+
+                $latest_analytics = latest_analytics::where('session_id','=',$data['test-name'])->first();
+                if($latest_analytics==null){
+                    $latest_analytics = new latest_analytics();
+                }
+                $latest_analytics->session_id = $data['test-name'];
+                $latest_analytics->avg_down = $analytics->avg_down;
+                $latest_analytics->avg_jitter = $analytics->avg_jitter;
+                $latest_analytics->avg_rtt = $analytics->avg_rtt;
+                $latest_analytics->avg_up = $analytics->avg_up;
+                $latest_analytics->max_down = $analytics->max_down;
+                $latest_analytics->max_jitter = $analytics->max_jitter;
+                $latest_analytics->max_rtt = $analytics->max_rtt;
+                $latest_analytics->max_up = $analytics->max_up;
+                $latest_analytics->min_down = $analytics->min_down;
+                $latest_analytics->min_jitter = $analytics->min_jitter;
+                $latest_analytics->min_rtt = $analytics->min_rtt;
+                $latest_analytics->min_up = $analytics->min_up;
+                $latest_analytics->r_packets = $analytics->r_packets;
+                $latest_analytics->st_down = $analytics->st_down;
+                $latest_analytics->st_up = $analytics->st_up;
+                $latest_analytics->st_rtt = $analytics->st_rtt;
+                $latest_analytics->t_packets = $analytics->t_packets;
+                $latest_analytics->save();
 
             }
         };
