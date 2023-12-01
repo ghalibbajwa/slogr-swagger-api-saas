@@ -19,6 +19,6 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build . -tag ghalibbajwa/your-image-name:$(date +%s) .
+        docker build . --tag ghalibbajwa/your-image-name:$(date +%s) .
         docker push your-docker-username/your-image-name:$(date +%s)
 
