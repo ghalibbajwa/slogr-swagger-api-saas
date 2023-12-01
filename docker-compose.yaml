@@ -26,9 +26,9 @@ services:
       - DB_CONNECTION=pgsql
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_DATABASE=laravel
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=root
+      - DB_DATABASE=slogr
+      - DB_USERNAME=slogr
+      - DB_PASSWORD=slogr123
     command: sh -c 'php artisan migrate ; php artisan db:seed --class=ProfilesTableSeeder; php artisan db:seed --class=PermissionSeeder   ; php artisan view:clear; php artisan passport:install ; php artisan import:csv'
 
 volumes:
