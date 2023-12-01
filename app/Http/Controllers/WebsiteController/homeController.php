@@ -268,8 +268,8 @@ class homeController extends Controller
                     ],
                     "properties" => [
                         'color' => 'blue',
-                        'session_id' => $se->id
-
+                        'session_id' => $se->id,
+                        'id' => $se->id
                     ]
                 ];
             } catch (\Exception $e) {
@@ -343,7 +343,7 @@ class homeController extends Controller
                         'coordinates' => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
                         'color' => 'blue',
                         'session_id' => $se->id,
-
+                        'id' => $se->id
                     ];
 
                     $feature = [
@@ -355,7 +355,7 @@ class homeController extends Controller
                         "properties" => [
                             'color' => 'blue',
                             'session_id' => $se->id,
-                          
+                            'id' => $se->id
 
                         ]
                     ];
@@ -382,7 +382,8 @@ class homeController extends Controller
                         ],
                         "properties" => [
                             'color' => 'blue',
-                            'session_id' => $se->id
+                            'session_id' => $se->id,
+                            'id' => $se->id
     
                         ]
                     ];
