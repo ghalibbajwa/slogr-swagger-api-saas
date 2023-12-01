@@ -18,8 +18,8 @@ jobs:
       run: docker login -u ghalibbajwa -p porsche911
 
     - name: Build and push Docker image
-      run: docker build . --tag ghalibbajwa/your-image-name:$(date +%s)
+      run: docker build . --tag ghalibbajwa/slogr-controller-laravel:$(date +%s)
 
     - name: Push Image
-      run: docker push your-docker-username/your-image-name:$(date +%s)
+      run: docker push ghalibbajwa/slogr-controller-laravel:$(date +%s)
 
