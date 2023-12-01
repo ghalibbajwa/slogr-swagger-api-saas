@@ -7,6 +7,8 @@ use Hash;
 use Auth;
 use App\User;
 use App\Role;
+use App\Permission;
+use Mockery\Expectation;
 
 class AuthController extends Controller
 {
@@ -99,6 +101,8 @@ class AuthController extends Controller
         $user = User::create($data);
         $success['token'] = $user->createToken('authToken')->accessToken;
         $success['user'] = $user;
+
+        
         return response()->json(['success' => $success]);
     }
     /**
@@ -191,8 +195,18 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthenticated'], 422);
         } else {
             // dd(auth()->guard('web')->user());
+            try{
+
+                $role = Role::find(auth()->guard('web')->user()->roles[0]->id)->permissions;
+            }
+            catch (\Exception $e){
+               $role = null;
+            }
+
             $success['token'] = auth()->guard('web')->user()->createToken('authToken')->accessToken;
             $success['user'] = auth()->guard('web')->user();
+            $success['permissions'] = $role ;
+
             return response()->json(['success' => $success])->setStatusCode(200);
         }
     }

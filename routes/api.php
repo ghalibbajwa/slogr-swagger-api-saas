@@ -91,7 +91,8 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     #organization
     Route::get('/organizations', [organizationController::class, 'index'])->middleware('checkPermission:view_organizations');
-    Route::post('/add-organization', [organizationController::class, 'store'])->middleware('checkPermission:add_organization');
+    // Route::post('/add-organization', [organizationController::class, 'store'])->middleware('checkPermission:add_organization');
+    Route::post('/add-organization', [organizationController::class, 'store']);
     Route::post('/assign-organization', [organizationController::class, 'assign'])->middleware('checkPermission:assign_organization');
     Route::post('/edit-organization', [organizationController::class, 'edit'])->middleware('checkPermission:edit_organization');
     Route::post('/delete-organization', [organizationController::class, 'delete'])->middleware('checkPermission:delete_organization');
