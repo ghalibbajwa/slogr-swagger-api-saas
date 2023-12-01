@@ -12,6 +12,8 @@ use App\groups;
 use Validator;
 use DB;
 use App\latest_analytics;
+use Illuminate\Support\Str;
+
 
 class homeController extends Controller
 {
@@ -269,7 +271,7 @@ class homeController extends Controller
                     "properties" => [
                         'color' => 'blue',
                         'session_id' => $se->id,
-                        'id' => $se->id
+                        'id' => Str::uuid()
                     ]
                 ];
             } catch (\Exception $e) {
@@ -343,7 +345,7 @@ class homeController extends Controller
                         'coordinates' => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
                         'color' => 'blue',
                         'session_id' => $se->id,
-                        'id' => $se->id
+                        'id' => Str::uuid()
                     ];
 
                     $feature = [
@@ -355,7 +357,7 @@ class homeController extends Controller
                         "properties" => [
                             'color' => 'blue',
                             'session_id' => $se->id,
-                            'id' => $se->id
+                            'id' => Str::uuid()
 
                         ]
                     ];
@@ -383,7 +385,7 @@ class homeController extends Controller
                         "properties" => [
                             'color' => 'blue',
                             'session_id' => $se->id,
-                            'id' => $se->id
+                            'id' => Str::uuid()
     
                         ]
                     ];
