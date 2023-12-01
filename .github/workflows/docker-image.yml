@@ -1,0 +1,48 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Set timestamp in a variable
+      id: timestamp
+      run: |
+        echo "::set-output name=timestamp::$(date +%s)"
+
+     
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4' # Change to your PHP version
+
+      
+    
+
+    - uses: actions/checkout@v3
+    - name: Login to Docker Hub
+      run: docker login -u ghalibbajwa -p porsche911
+
+    - name: Composer Install
+      run: composer install
+
+    - name: Build and tag Docker image
+      run: |
+        TIMESTAMP=$(echo "${{ steps.timestamp.outputs.timestamp }}")
+        docker build . --tag ghalibbajwa/slogr-controller-laravel:${TIMESTAMP}
+
+    - name: Push Docker image
+      run: |
+        TIMESTAMP=$(echo "${{ steps.timestamp.outputs.timestamp }}")
+        docker push ghalibbajwa/slogr-controller-laravel:${TIMESTAMP}
+
