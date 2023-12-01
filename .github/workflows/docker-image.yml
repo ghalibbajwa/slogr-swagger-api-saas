@@ -53,8 +53,8 @@ jobs:
     - name: Update Kubernetes deployment
       env:
         KUBE_CONFIG_DATA: ${{ secrets.aks }} 
-        run: |
-          echo "$KUBE_CONFIG_DATA" | base64 --decode > kubeconfig.yaml
-          TIMESTAMP=$(echo "${{ steps.timestamp.outputs.timestamp }}")
-          kubectl --kubeconfig=kubeconfig.yaml set image deployment/saas-api app=ghalibbajwa/slogr-controller-laravel:${TIMESTAMP}
+      run: |
+        echo "$KUBE_CONFIG_DATA" | base64 --decode > kubeconfig.yaml
+        TIMESTAMP=$(echo "${{ steps.timestamp.outputs.timestamp }}")
+        kubectl --kubeconfig=kubeconfig.yaml set image deployment/saas-api app=ghalibbajwa/slogr-controller-laravel:${TIMESTAMP}
 
