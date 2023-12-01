@@ -39,6 +39,9 @@ jobs:
     - name: Copy env2
       run: cp .env2.example .env
 
+    - name: delete logs
+      run: rm -rf storage/logs/*
+
       
     - name: Build and tag Docker image
       run: |
