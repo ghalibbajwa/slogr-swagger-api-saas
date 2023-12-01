@@ -37,7 +37,7 @@ jobs:
       run: composer install
 
     - name: Copy env
-      run: cp .env.example .env
+      run: cp .env2.example .env
 
       
     - name: Build and tag Docker image
