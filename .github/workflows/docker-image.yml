@@ -19,6 +19,9 @@ jobs:
       run: |
         echo "::set-output name=timestamp::$(date +%s)"
 
+    - name: Composer Install
+      run: composer install  # Add any necessary flags or options here if needed
+
     - uses: actions/checkout@v3
     - name: Login to Docker Hub
       run: docker login -u ghalibbajwa -p porsche911
