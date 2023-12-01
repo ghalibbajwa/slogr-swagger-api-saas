@@ -50,11 +50,21 @@ jobs:
         TIMESTAMP=$(echo "${{ steps.timestamp.outputs.timestamp }}")
         docker push ghalibbajwa/slogr-controller-laravel:${TIMESTAMP}
 
-    - name: Update Kubernetes deployment
-      env:
-        KUBE_CONFIG_DATA: ${{ secrets.AKS }} 
+    - name: Azure Login
+      uses: Azure/login@v1.4.6
+      with:
+        creds: ${{ secrets.AKS }}
+
+    - name: Update container image in Kubernetes deployment
       run: |
-        echo "$KUBE_CONFIG_DATA" | base64 --decode > kubeconfig.yaml
         TIMESTAMP=$(echo "${{ steps.timestamp.outputs.timestamp }}")
-        kubectl --kubeconfig=kubeconfig.yaml set image deployment/saas-api app=ghalibbajwa/slogr-controller-laravel:${TIMESTAMP}
+        RESOURCE_GROUP="rancher-rg"
+        AKS_CLUSTER="slogr"
+        DEPLOYMENT_NAME="saas-api"
+        CONTAINER_NAME="app"
+        NEW_IMAGE= ghalibbajwa/slogr-controller-laravel:${TIMESTAMP}
+
+          # Update the container image in the deployment
+          az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
+          kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=$NEW_IMAGE
 
