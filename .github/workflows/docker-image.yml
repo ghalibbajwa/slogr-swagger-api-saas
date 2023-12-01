@@ -52,7 +52,7 @@ jobs:
 
     - name: Update Kubernetes deployment
       env:
-        KUBE_CONFIG_DATA: ${{ secrets.aks }} 
+        KUBE_CONFIG_DATA: ${{ secrets.AKS }} 
       run: |
         echo "$KUBE_CONFIG_DATA" | base64 --decode > kubeconfig.yaml
         TIMESTAMP=$(echo "${{ steps.timestamp.outputs.timestamp }}")
