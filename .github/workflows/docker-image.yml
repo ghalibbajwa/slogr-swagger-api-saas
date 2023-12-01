@@ -49,5 +49,12 @@ jobs:
       run: |
         TIMESTAMP=$(echo "${{ steps.timestamp.outputs.timestamp }}")
         docker push ghalibbajwa/slogr-controller-laravel:${TIMESTAMP}
+
+    - name: push image to rancher
+      run: |
+         TIMESTAMP=$(echo "${{ steps.timestamp.outputs.timestamp }}")
+          curl -k -u 'token-tqjv9:7vldxvvrl2fktgl89qwv5g95tt5c69psq4z2s5sszcbvxv95vzp7gv' -X PATCH -H 'Content-Type: application/json-patch+json' https://rancher.slogr.io/k8s/clusters/local/apis/apps/v1/namespaces/development/deployments/saas-api -d '[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "ghalibbajwa/slogr-controller-laravel:${TIMESTAMP}"}]'
+         
+        
   
    
