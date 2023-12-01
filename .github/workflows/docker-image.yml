@@ -36,7 +36,7 @@ jobs:
     - name: Composer Install
       run: composer install
 
-    - name: Copy env
+    - name: Copy env2
       run: cp .env2.example .env
 
       
