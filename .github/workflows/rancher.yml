@@ -12,8 +12,8 @@ jobs:
       - name: Update Rancher Deployment Image
         env:
           RANCHER_API_URL: https://rancher.slogr.io/v3
-          ACCESS_KEY: token-7gdnl
-          SECRET_KEY: 5cvrlrfxjl6txq66pr8w4vqnbb7zhj84l4dlqvsvd2zdxlpk5lg42j
+          ACCESS_KEY: token-tqjv9
+          SECRET_KEY: 7vldxvvrl2fktgl89qwv5g95tt5c69psq4z2s5sszcbvxv95vzp7gv
           DEPLOYMENT_ID: saas-api  # Replace with your deployment ID
           CONTAINER_NAME: ghalibbajwa/slogr-controller-laravel:latest  # Replace with your container name
           NEW_IMAGE: 'your-new-image:tag'  # Replace with your new image
