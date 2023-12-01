@@ -36,6 +36,10 @@ jobs:
     - name: Composer Install
       run: composer install
 
+    - name: Copy env
+      run: cp .env.example .env
+
+      
     - name: Build and tag Docker image
       run: |
         TIMESTAMP=$(echo "${{ steps.timestamp.outputs.timestamp }}")
