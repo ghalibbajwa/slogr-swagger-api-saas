@@ -29,6 +29,11 @@ jobs:
     - name: Change directory
       run: cd /home
 
+
+    - name: sd
+      run: ls
+
+      
     - name: Composer Install
       run: composer install
 
