@@ -49,6 +49,7 @@ Route::group(['middleware' => 'web'], function () {
 Route::post('/login', 'Api\AuthController@login');
 
 Route::post('/register', 'Api\AuthController@register');
+Route::post('/social', 'Api\AuthController@social');
 
 Route::get('/mail', [emailController::class, 'sendTestEmail']);
 Route::get('/sch', [schedularController::class, 'schedule']);
@@ -117,6 +118,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     // #Auth
     // Route::post('/register', [AuthController::class, 'register'])->middleware('checkPermission:register');
+    
 
 
     #groups

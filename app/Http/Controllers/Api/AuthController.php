@@ -9,7 +9,7 @@ use App\User;
 use App\Role;
 use App\Permission;
 use Mockery\Expectation;
-
+use Str;
 class AuthController extends Controller
 {
     /**
@@ -90,7 +90,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
 
-        
+
         $validated = $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
@@ -99,10 +99,12 @@ class AuthController extends Controller
         $data = $request->all();
         $data['password'] = Hash::make($data['password']);
         $user = User::create($data);
+        $role = Role::find(1);
+        $user->roles()->attach($role);
         $success['token'] = $user->createToken('authToken')->accessToken;
         $success['user'] = $user;
 
-        
+
         return response()->json(['success' => $success]);
     }
     /**
@@ -185,6 +187,59 @@ class AuthController extends Controller
      * )
      */
 
+
+    public function social(Request $request)
+    {
+        $validator = $request->validate([
+            'name' => 'required',
+            'sub' => 'required'
+        ]);
+      
+        $email = $request->sub . '@temp.com';
+
+        $user = User::where('email', '=', $email)->first();
+
+        if (!$user) {
+            $password = Hash::make($request->sub);
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $email;
+            $user->password = $password;
+            $user->save();
+
+            $role = Role::find(1);
+            $user->roles()->attach($role);
+          
+
+        } else {
+            $email = $user->email;
+        }
+
+        $auth = [
+            "email" => $email,
+            "password" => $request->sub
+        ];
+
+        if (!auth()->guard('web')->attempt($auth)) {
+            
+            return response()->json(['error' => 'Unauthenticated'], 422);
+        } else {
+            // dd(auth()->guard('web')->user());
+            try {
+
+                $role = Role::find(auth()->guard('web')->user()->roles[0]->id)->permissions;
+              
+            } catch (\Exception $e) {
+                $role = null;
+            }
+
+            $success['token'] = auth()->guard('web')->user()->createToken('authToken')->accessToken;
+            $success['user'] = auth()->guard('web')->user();
+            $success['permissions'] = $role;
+
+            return response()->json(['success' => $success])->setStatusCode(200);
+        }
+    }
     public function login(Request $request)
     {
         $validator = $request->validate([
@@ -195,24 +250,23 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthenticated'], 422);
         } else {
             // dd(auth()->guard('web')->user());
-            try{
+            try {
 
                 $role = Role::find(auth()->guard('web')->user()->roles[0]->id)->permissions;
-            }
-            catch (\Exception $e){
-               $role = null;
+            } catch (\Exception $e) {
+                $role = null;
             }
 
             $success['token'] = auth()->guard('web')->user()->createToken('authToken')->accessToken;
             $success['user'] = auth()->guard('web')->user();
-            $success['permissions'] = $role ;
+            $success['permissions'] = $role;
 
             return response()->json(['success' => $success])->setStatusCode(200);
         }
     }
 
 
-       /**
+    /**
      * @OA\Post(
      *     path="/api/assign",
      *     summary="Assign Role",
@@ -291,5 +345,5 @@ class AuthController extends Controller
      *     )
      * )
      */
-   
+
 }
