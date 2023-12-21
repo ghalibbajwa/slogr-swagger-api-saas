@@ -269,6 +269,8 @@ class homeController extends Controller
                         "coordinates" => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
                     ],
                     "properties" => [
+                        'server' => $server,
+                        'client' => $client,
                         'color' => 'blue',
                         'session_id' => $se->id,
                         'id' => Str::uuid()
@@ -355,6 +357,8 @@ class homeController extends Controller
                             "coordinates" => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
                         ],
                         "properties" => [
+                            'server' => $server,
+                            'client' => $client,
                             'color' => 'blue',
                             'session_id' => $se->id,
                             'id' => Str::uuid()
@@ -383,6 +387,8 @@ class homeController extends Controller
                             "coordinates" => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
                         ],
                         "properties" => [
+                            'server' => $server,
+                            'client' => $client,
                             'color' => 'blue',
                             'session_id' => $se->id,
                             'id' => Str::uuid()

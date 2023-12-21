@@ -298,7 +298,9 @@ class sessionController extends Controller
 
 
         $session->save();
+      
         $code = $this->create_session($session);
+  
         if ($code == "suc") {
 
             $success['session'] = $session;
@@ -372,7 +374,7 @@ class sessionController extends Controller
             $producer = new RabbitMQService;
             $message = agents::find($session->server)->ipaddress.",8009,".$session->n_packets.",".$session->p_interval.",".$session->w_time.",".$session->dscp.",".agents::find($session->client)->ipaddress.",".$session->p_size.",".$session->id.",".agents::find($session->client)->agent_code;
             // $mesage = "35.229.251.91,8009,20,50,2000,0,192.168.100.52,50,test,./";
-            
+          
             $producer->publish($message, "sessions" );
             return "suc";
 
