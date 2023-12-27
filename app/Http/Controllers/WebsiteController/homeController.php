@@ -214,7 +214,7 @@ class homeController extends Controller
                 $client = $agents[$se->client];
                 $links[$count] = [
                     'coordinates' => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
-                    'color' => 'blue',
+                    'color' => 'grey',
                     'session_id' => $se->id
                 ];
 
@@ -271,7 +271,7 @@ class homeController extends Controller
                     "properties" => [
                         'server' => $server,
                         'client' => $client,
-                        'color' => 'blue',
+                        'color' => 'grey',
                         'session_id' => $se->id,
                         'id' => Str::uuid()
                     ]
@@ -345,7 +345,7 @@ class homeController extends Controller
                     $client = $agents[$se->client];
                     $links[$count] = [
                         'coordinates' => [[floatval($server->long), floatval($server->lat)], [floatval($client->long), floatval($client->lat)]],
-                        'color' => 'blue',
+                        'color' => 'grey',
                         'session_id' => $se->id,
                         'id' => Str::uuid()
                     ];
@@ -359,7 +359,7 @@ class homeController extends Controller
                         "properties" => [
                             'server' => $server,
                             'client' => $client,
-                            'color' => 'blue',
+                            'color' => 'grey',
                             'session_id' => $se->id,
                             'id' => Str::uuid()
 
@@ -389,7 +389,7 @@ class homeController extends Controller
                         "properties" => [
                             'server' => $server,
                             'client' => $client,
-                            'color' => 'blue',
+                            'color' => 'grey',
                             'session_id' => $se->id,
                             'id' => Str::uuid()
     
