@@ -203,8 +203,8 @@ class homeController extends Controller
         }
 
         $sessions = sessions::where('server', '=', $request->aid)->get();
-
-        $agents = agents::all();
+        $userOrganizationId = auth()->user()->organization_id;
+        $agents = agents::where('organization_id', $userOrganizationId)->orwhere('organization_id',1)->get();
         $agents = collect($agents)->pluck(null, 'id')->all();
         $links = array();
         $count = 0;
@@ -231,16 +231,16 @@ class homeController extends Controller
 
     function getLinks(Request $request)
     {
-
+        $userOrganizationId = auth()->user()->organization_id;
         if ($request->group) {
             $group = groups::find($request->group);
 
             $sessions = $group->sessions;
         } else {
 
-            $sessions = sessions::all();
+            $sessions = sessions::where('organization_id', $userOrganizationId)->orwhere('organization_id',1)->get();
         }
-        $agents = agents::all();
+        $agents = agents::where('organization_id', $userOrganizationId)->orwhere('organization_id',1)->get();
         $agents = collect($agents)->pluck(null, 'id')->all();
 
 
@@ -290,7 +290,7 @@ class homeController extends Controller
 
         if ($request->profiles) {
 
-            $profiles = profiles::all();
+            $profiles = profiles::where('organization_id', $userOrganizationId)->orwhere('organization_id',1)->get();
             // $analytics = Analytics::whereIn('id', function ($query) {
             //     $query->select(DB::raw('MAX(id)'))
             //         ->from('analytics')
@@ -411,8 +411,8 @@ class homeController extends Controller
     {
 
 
-
-        $agents = agents::all();
+        $userOrganizationId = auth()->user()->organization_id;
+        $agents = agents::where('organization_id', $userOrganizationId)->orwhere('organization_id',1)->get();
         if ($request->group) {
 
             $group = groups::find($request->group);

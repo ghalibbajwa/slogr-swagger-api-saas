@@ -38,7 +38,7 @@ class CreateProfilesTable extends Migration
             $table->float('jitter_r');
             $table->float('loss_g');
             $table->float('loss_r');
-
+            $table->integer('organization_id')->nullable();
             $table->timestamps();
         });
     }

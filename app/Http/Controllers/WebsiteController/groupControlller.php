@@ -71,8 +71,8 @@ class groupControlller extends Controller
 
     function index()
     {
-
-        $groups = groups::all();
+        $userOrganizationId = auth()->user()->organization_id;  
+        $groups = groups::Where('organization_id', $userOrganizationId)->orwhere('organization_id',1)->orderBy('created_at', 'desc')->get();
 
         return response()->json($groups)->setStatusCode(200);
 
@@ -155,6 +155,14 @@ class groupControlller extends Controller
 
         $group->name = $request->name;
 
+        if (auth()->user()->organization_id != null) {
+            $group->organization_id = auth()->user()->organization_id;
+        }else{
+            return response()->json(['error' => "User does not belong to any Organization. Create an Organization to begin"])->setStatusCode(400);
+        }
+
+        
+
         $group->save();
 
         $group->sessions()->sync($sessionsarray);
@@ -203,6 +211,9 @@ class groupControlller extends Controller
         $group = groups::find($request->id);
 
         if($group){
+            if($group->organization_id == 1){
+                return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
+            }
 
             if($request->name){
                 $group->name = $request->name;
@@ -242,6 +253,9 @@ class groupControlller extends Controller
         $group = groups::find($request->id);
 
         if ($group) {
+            if($group->organization_id == 1){
+                return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
+            }
             $group->delete();
 
             return response()->json(['success' => "group deleted"])->setStatusCode(200);

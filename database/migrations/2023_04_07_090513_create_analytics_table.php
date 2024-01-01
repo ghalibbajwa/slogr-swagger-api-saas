@@ -33,6 +33,7 @@ class CreateAnalyticsTable extends Migration
             $table->float('st_up');
             $table->float('st_rtt');
             $table->integer('t_packets');
+            
             $table->timestamps();
         });
     }

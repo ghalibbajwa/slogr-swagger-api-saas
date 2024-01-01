@@ -36,8 +36,9 @@ class profileController extends Controller
      */
 
     public function index()
-    {
-        $profiles = profiles::all();
+    {   
+        $userOrganizationId = auth()->user()->organization_id;
+        $profiles = profiles::where('organization_id', $userOrganizationId)->orwhere('organization_id',1)->get();
         $data['profiles'] = $profiles;
         return response()->json($data)->setStatusCode(200);
 
@@ -209,6 +210,9 @@ class profileController extends Controller
             if(!$profile){
                 return response()->json(['error' => "profile not found"] )->setStatusCode(400);
             }
+            if($profile->organization_id == 1){
+                return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
+            }
         } else {
 
             $profile = new profiles;
@@ -221,6 +225,13 @@ class profileController extends Controller
             'delay_g', 'delay_r', 'downlink_bw_g', 'downlink_bw_r', 'uplink_bw_g', 'uplink_bw_r',
             'jitter_g', 'jitter_r', 'loss_g', 'loss_r'
         ];
+
+       
+        if (auth()->user()->organization_id != null) {
+            $profile->organization_id = auth()->user()->organization_id;
+        }else{
+            return response()->json(['error' => "User does not belong to any Organization. Create an Organization to begin"])->setStatusCode(400);
+        }
 
         foreach($fields as $f){
             $profile->{$f} = $request->{$f};
@@ -275,6 +286,9 @@ class profileController extends Controller
 
 
         $profile = profiles::find($request->id);
+        if($profile->organization_id == 1){
+            return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
+        }
 
         if ($profile) {
             $profile->delete();
@@ -316,48 +330,5 @@ class profileController extends Controller
      *     )
      * )
      */
-    public function push($id)
-    {
-        $profile = profiles::find($id);
-        $agents = agents::all();
-        $client = new \GuzzleHttp\Client();
-        foreach ($agents as $ag) {
-            if ($ag->type == "client" and $ag->os == "win") {
-                $url = $ag->ipaddress . ":5000/create-profile";
-                $data = [
-                    'name' => $profile->name,
-                    'n-packets' => $profile->n-packets,
-                    'intervel' => $profile->p-interval,
-                    'p-size' => $profile->p-size,
-                    'w-time' => $profile->w-time,
-                    'dscp' => $profile->dscp,
-                    'max-loss' => $profile->max-loss,
-                    'max-up' => $profile->max-uplink,
-                    'max-down' => $profile->max-downlink,
-                    'max-rtt' => $profile->max-rtt,
-                    'max-jitter' => $profile->max-jitter,
-                ];
-                $jsonData = json-encode($data);
-
-                try {
-                    $response = $client->post($url, [
-                        'headers' => [
-                            'Content-Type' => 'application/json',
-                        ],
-                        'body' => $jsonData,
-                    ]);
-                } catch (\Exception $e) {
-                    continue;
-                }
-
-
-            }
-        }
-
-        return response()->json(['success' => 'success'])->setStatusCode(200);
-
-
-
-
-    }
+    
 }

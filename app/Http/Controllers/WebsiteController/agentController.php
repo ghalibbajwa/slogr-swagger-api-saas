@@ -43,6 +43,7 @@ class agentController extends Controller
      * )
      */
 
+    
     public function index(Request $request)
     {
 
@@ -62,7 +63,9 @@ class agentController extends Controller
         if ($page != 1) {
             $prev = $page - 1;
         }
-        $agents = agents::orderBy('created_at', 'desc')->get();
+        
+        $userOrganizationId = auth()->user()->organization_id;
+        $agents = agents::orderBy('created_at', 'desc')->where('organization_id', $userOrganizationId)->orwhere('organization_id',1)->get();
 
         if ($request->name) {
             $name = $request->name;
@@ -279,8 +282,14 @@ class agentController extends Controller
 
             $agent = agents::find($request->aid);
 
+            
 
             if ($agent) {
+
+                if($agent->organization_id == 1){
+                    return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
+                }
+
                 $agent->name = $request->name;
 
                 $agent->save();
@@ -339,6 +348,9 @@ class agentController extends Controller
         $agent = agents::find($request->delete);
 
         if ($agent) {
+            if($agent->organization_id == 1){
+                return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
+            }
             $agent->delete();
 
             return response()->json(['success' => "agent deleted"])->setStatusCode(200);
@@ -390,8 +402,14 @@ class agentController extends Controller
             $agent->name = $request->name;
 
             $agent->status = "active";
-            $agent->organization_id = auth()->user()->organization_id;
-            $agent->Organization = Organization::find(auth()->user()->organization_id)->name;
+            
+            if (auth()->user()->organization_id != null) {
+                $agent->Organization = Organization::find(auth()->user()->organization_id)->name;
+                $agent->organization_id = auth()->user()->organization_id;
+            }else{
+                return response()->json(['error' => "User does not belong to any Organization. Create an Organization to begin"])->setStatusCode(400);
+            }
+          
             $agent->save();
             return response()->json([$agent])->setStatusCode(200);
 
@@ -442,8 +460,9 @@ class agentController extends Controller
 
 
     public function referenceSessions(Request $request)
-    {
-        $sessions = sessions::where('server', '=', $request->aid)->select('client', 'id')->get();
+    {   
+        $userOrganizationId = auth()->user()->organization_id;
+        $sessions = sessions::where('server', '=', $request->aid)->select('client', 'id')->where('organization_id', $userOrganizationId)->get();
 
 
         $agents = [];

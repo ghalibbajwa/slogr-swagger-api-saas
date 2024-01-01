@@ -83,8 +83,8 @@ class sessionController extends Controller
             $prev = $page - 1;
         }
 
-
-        $sessions = sessions::orderBy('created_at', 'desc')->get();
+        $userOrganizationId = auth()->user()->organization_id;
+        $sessions = sessions::orderBy('created_at', 'desc')->where('organization_id', $userOrganizationId)->orwhere('organization_id',1)->get();
 
         if ($request->c_name) {
             $c_name = $request->c_name;
@@ -272,6 +272,9 @@ class sessionController extends Controller
         if ($request->edit == true) {
             $session = sessions::find($request->aid);
             if ($session) {
+                if($session->organization_id == 1){
+                    return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
+                }
 
             } else {
                 return response()->json(['error' => "Session not found"])->setStatusCode(400);
@@ -296,6 +299,12 @@ class sessionController extends Controller
         $session->dscp = $request->dscp;
         $session->p_size = $request->p_size;
 
+        if (auth()->user()->organization_id != null) {
+            $session->organization_id = auth()->user()->organization_id;
+        }else{
+            return response()->json(['error' => "User does not belong to any Organization. Create an Organization to begin"])->setStatusCode(400);
+        }
+ 
 
         $session->save();
       
@@ -354,6 +363,9 @@ class sessionController extends Controller
         $session = sessions::find($request->delete);
 
         if ($session) {
+            if($session->organization_id == 1){
+                return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
+            }
 
             $session->delete();
             return response()->json(['success' => "session deleted"])->setStatusCode(200);
@@ -500,7 +512,8 @@ class sessionController extends Controller
 
 
     public function sessionnames(){
-        $session = sessions::select('id', 'c_name', 's_name')->get();
+        $userOrganizationId = auth()->user()->organization_id;
+        $session = sessions::select('id', 'c_name', 's_name')->where('organization_id', $userOrganizationId)->orwhere('organization_id',1)->get();
         return response()->json($session)->setStatusCode(200);
     }
 
@@ -553,7 +566,6 @@ class sessionController extends Controller
         } else {
             return response()->json(['error' => "session not found"])->setStatusCode(400);
         }
-
 
     }
 

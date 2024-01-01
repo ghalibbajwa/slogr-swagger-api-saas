@@ -33,21 +33,21 @@ class organizationController extends Controller
         }
 
 
-
-        if(auth()->user()->organziation_id != null){
-
+        $userOrganizationId = auth()->user()->organization_id;
         
+        if($userOrganizationId == null || empty($userOrganizationId)){
+
+      
         $organizations = new Organization;
 
         $organizations->name = $request->name;
         $organizations->address = $request->address;
         $organizations->phone = $request->phone;
-
-
-
-
-
         $organizations->save();
+
+        $user = User::find(auth()->user()->id);
+        $user->organization_id = $organizations->id;
+        $user->save();
         $success['organizations'] = $organizations;
 
 

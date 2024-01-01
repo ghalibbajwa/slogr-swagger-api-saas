@@ -22,6 +22,7 @@ class CreateAlertsTable extends Migration
             $table->integer('tests_norun')->nullable();
             $table->string('name');
             $table->string('email');
+            $table->integer('organization_id')->nullable();
             $table->timestamps();
         });
     }

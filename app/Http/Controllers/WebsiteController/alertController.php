@@ -40,8 +40,8 @@ class alertController extends Controller
 
     public function index()
     {
-
-        $alerts = alerts::all();
+        $userOrganizationId = auth()->user()->organization_id;
+        $alerts = alerts::Where('organization_id', $userOrganizationId)->get();
 
 
         return response()->json($alerts)->setStatusCode(200);
@@ -135,6 +135,13 @@ class alertController extends Controller
         if ($request->tests_norun) {
             $alert->tests_norun = $request->tests_norun;
         }
+
+        if (auth()->user()->organization_id != null) {
+            $alert->organization_id = auth()->user()->organization_id;
+        }else{
+            return response()->json(['error' => "User does not belong to any Organization. Create an Organization to begin"])->setStatusCode(400);
+        }
+       
 
 
 

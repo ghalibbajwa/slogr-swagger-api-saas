@@ -11,8 +11,8 @@ class reportController extends Controller
 {
     function index()
     {
-
-        $reports = reports::all();
+        $userOrganizationId = auth()->user()->organization_id;
+        $reports = reports::where('organization_id', $userOrganizationId)->get();
 
         return response()->json($reports)->setStatusCode(200);
 
@@ -38,6 +38,13 @@ class reportController extends Controller
         $report->name = $request->name;
         $report->time = $request->time;
         $report->email = $request->email;
+
+        if (auth()->user()->organization_id != null) {
+            $report->organization_id = auth()->user()->organization_id;
+        }else{
+            return response()->json(['error' => "User does not belong to any Organization. Create an Organization to begin"])->setStatusCode(400);
+        }
+      
         $report->save();
 
         $report->alerts()->sync($alerts);

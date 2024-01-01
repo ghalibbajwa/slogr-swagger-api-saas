@@ -18,6 +18,7 @@ class CreateReportsTable extends Migration
             $table->string('name');
             $table->time('time');
             $table->string('email');
+            $table->integer('organization_id')->nullable();
             $table->timestamps();
         });
     }

@@ -18,6 +18,7 @@ class CreateReportDatasTable extends Migration
             $table->integer('alert_id');
             $table->string('type');
             $table->string('result');
+            $table->integer('organization_id')->nullable();
             $table->timestamps();
         });
     }

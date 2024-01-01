@@ -12,11 +12,14 @@ use App\User;
 class roleController extends Controller
 {
     public function index()
-    {
-        $roles = Role::all();
+    {   
+        $userOrganizationId = auth()->user()->organization_id;
+        $roles = Role::where('organization_id', $userOrganizationId)->get();
         $data['roles'] = $roles;
         return response()->json(['data' => $data])->setStatusCode(200);
     }
+
+    
 
     public function roleDetails(Request $request)
     {

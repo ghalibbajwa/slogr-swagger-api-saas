@@ -83,6 +83,7 @@ class PermissionSeeder extends Seeder
             "organization_id" => $organization->id
         ]);
 
+       
         $user = User::create([
             'name' => 'admin',
             'email' => 'admin@slogr.io',
@@ -96,6 +97,13 @@ class PermissionSeeder extends Seeder
         $role->permissions()->sync($allPermissions);
 
         $user->roles()->attach($role);
+
+        $organizationadmin = Role::Create([
+            'name' => 'organizationadmin',
+        ]);
+
+       
+
 
     }
 }
