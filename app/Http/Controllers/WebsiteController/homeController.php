@@ -317,8 +317,9 @@ class homeController extends Controller
             })->get()->keyBy('session_id');
            
             foreach ($sessions as $se) {
+                try {
+                    $metric = $latest_analytics[$se->id];
 
-                $metric = $latest_analytics[$se->id];
 
                 $slas = [];
                 
@@ -339,6 +340,10 @@ class homeController extends Controller
 
 
                 }
+            }
+             catch (\Exception $e) {
+                continue;
+            }
 
                 try {
                     $server = $agents[$se->server];
