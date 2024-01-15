@@ -288,7 +288,12 @@ class sessionController extends Controller
         $session->server = $request->serve;
         $session->s_name = agents::find($request->serve)->name;
         $session->c_name = agents::find($request->client)->name;
-        $session->p_name = profiles::find($request->profile)->name;
+        if($request->profile == 0){
+            $session->p_name = "best effort";
+        }
+        else{
+            $session->p_name = profiles::find($request->profile)->name;
+        }
         $session->client = $request->client;
         $session->profile = $request->profile;
         $session->schedule = $request->schedule;

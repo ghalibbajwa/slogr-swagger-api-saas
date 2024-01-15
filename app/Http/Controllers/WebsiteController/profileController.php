@@ -233,6 +233,8 @@ class profileController extends Controller
             return response()->json(['error' => "User does not belong to any Organization. Create an Organization to begin"])->setStatusCode(400);
         }
 
+       
+
         foreach($fields as $f){
             $profile->{$f} = $request->{$f};
         }

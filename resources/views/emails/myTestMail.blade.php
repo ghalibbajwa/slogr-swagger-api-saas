@@ -58,9 +58,9 @@
 
 <body>
     
-        <div class="header">
+        <!-- <div class="header">
             <img src="https://slogr.io/wp-content/uploads/2023/06/Group-2420.png" alt="Logo">
-        </div>
+        </div> -->
         <h1>{{ $details['title'] }}</h1>
         @php
         $colorsArray = explode(', ', $details['body']);
