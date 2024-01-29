@@ -290,14 +290,6 @@ class sessionController extends Controller
         $session->c_name = agents::find($request->client)->name;
         if($request->profile == 0){
             $session->p_name = "best effort";
-        }
-        else{
-            $session->p_name = profiles::find($request->profile)->name;
-        }
-        if($request->schedule < 600 ){
-            $request->schedule = 600;
-        }
-        if($request->profile == 0){
             $session->client = $request->client;
             $session->profile = $request->profile;
             $session->schedule = $request->schedule;
@@ -307,21 +299,25 @@ class sessionController extends Controller
             $session->w_time = 200;
             $session->dscp = 0;
             $session->p_size = 200;
-
-        }else{
-
         }
+        else{
+            $session->p_name = profiles::find($request->profile)->name;
+            $session->client = $request->client;
+            $session->profile = $request->profile;
+            $session->schedule = $request->schedule;
+            $session->count = $request->count;
+            $session->n_packets = $request->n_packets;
+            $session->p_interval = $request->p_interval;
+            $session->w_time = $request->w_time;
+            $session->dscp = $request->dscp;
+            $session->p_size = $request->p_size;
+        }
+        if($request->schedule < 600 ){
+            $session->schedule = 600;
+        }
+        
 
-        $session->client = $request->client;
-        $session->profile = $request->profile;
-        $session->schedule = $request->schedule;
-        $session->count = $request->count;
-        $session->n_packets = $request->n_packets;
-        $session->p_interval = $request->p_interval;
-        $session->w_time = $request->w_time;
-        $session->dscp = $request->dscp;
-        $session->p_size = $request->p_size;
-
+  
         if (auth()->user()->organization_id != null) {
             $session->organization_id = auth()->user()->organization_id;
         }else{
