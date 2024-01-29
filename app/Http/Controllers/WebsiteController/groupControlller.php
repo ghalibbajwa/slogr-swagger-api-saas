@@ -211,7 +211,7 @@ class groupControlller extends Controller
         $group = groups::find($request->id);
 
         if($group){
-            if($group->organization_id == 1){
+            if($group->organization_id != auth()->user()->organization_id){
                 return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
             }
 
@@ -253,7 +253,7 @@ class groupControlller extends Controller
         $group = groups::find($request->id);
 
         if ($group) {
-            if($group->organization_id == 1){
+            if($group->organization_id != auth()->user()->organization_id){
                 return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
             }
             $group->delete();

@@ -210,7 +210,7 @@ class profileController extends Controller
             if(!$profile){
                 return response()->json(['error' => "profile not found"] )->setStatusCode(400);
             }
-            if($profile->organization_id == 1){
+            if($profile->organization_id != auth()->user()->organization_id){
                 return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
             }
         } else {
@@ -288,7 +288,7 @@ class profileController extends Controller
 
 
         $profile = profiles::find($request->id);
-        if($profile->organization_id == 1){
+        if($profile->organization_id != auth()->user()->organization_id){
             return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
         }
 

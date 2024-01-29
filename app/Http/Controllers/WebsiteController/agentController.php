@@ -286,7 +286,7 @@ class agentController extends Controller
 
             if ($agent) {
 
-                if($agent->organization_id == 1){
+                if($agent->organization_id != auth()->user()->organization_id){
                     return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
                 }
 
@@ -348,7 +348,7 @@ class agentController extends Controller
         $agent = agents::find($request->delete);
 
         if ($agent) {
-            if($agent->organization_id == 1){
+            if($agent->organization_id != auth()->user()->organization_id){
                 return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
             }
             $agent->delete();

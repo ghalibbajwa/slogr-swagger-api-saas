@@ -29,7 +29,7 @@ services:
       - DB_DATABASE=slogr
       - DB_USERNAME=slogr
       - DB_PASSWORD=slogr123
-    command: sh -c 'php artisan migrate ; php artisan db:seed --class=ProfilesTableSeeder; php artisan db:seed --class=PermissionSeeder   ; php artisan view:clear; php artisan passport:install ; php artisan import:csv'
+    command: sh -c 'php artisan migrate ; php artisan db:seed --class=ProfilesTableSeeder; php artisan db:seed --class=PermissionSeeder   ; php artisan view:clear; php artisan passport:install ; php artisan import:csv; php artisan consume:all'
 
 volumes:
   db_data:

@@ -272,7 +272,7 @@ class sessionController extends Controller
         if ($request->edit == true) {
             $session = sessions::find($request->aid);
             if ($session) {
-                if($session->organization_id == 1){
+                if($session->organization_id != auth()->user()->organization_id){
                     return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
                 }
 
@@ -294,6 +294,24 @@ class sessionController extends Controller
         else{
             $session->p_name = profiles::find($request->profile)->name;
         }
+        if($request->schedule < 600 ){
+            $request->schedule = 600;
+        }
+        if($request->profile == 0){
+            $session->client = $request->client;
+            $session->profile = $request->profile;
+            $session->schedule = $request->schedule;
+            $session->count = 0;
+            $session->n_packets = 50;
+            $session->p_interval = 20;
+            $session->w_time = 200;
+            $session->dscp = 0;
+            $session->p_size = 200;
+
+        }else{
+
+        }
+
         $session->client = $request->client;
         $session->profile = $request->profile;
         $session->schedule = $request->schedule;
@@ -368,7 +386,7 @@ class sessionController extends Controller
         $session = sessions::find($request->delete);
 
         if ($session) {
-            if($session->organization_id == 1){
+            if($session->organization_id != auth()->user()->organization_id){
                 return response()->json(['Unauthorized' => "Unauthorized"])->setStatusCode(401);
             }
 

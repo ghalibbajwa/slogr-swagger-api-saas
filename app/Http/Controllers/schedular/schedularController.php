@@ -23,38 +23,38 @@ class schedularController extends Controller
     {
         ini_set('max_execution_time', 600);
         #sessions
-        // $scontol = new sessionController;
-        // $now = Carbon::now();
-        // $session = sessions::all();
+        $scontol = new sessionController;
+        $now = Carbon::now();
+        $session = sessions::all();
 
-        // foreach ($session as $s) {
-        //     $count = $s->count;
-        //     $le = $s->updated_at;
-        //     $sch = $s->schedule;
-        //     $diff = $le->diffInSeconds($now);
-        //     // dd($diff,$sch);
-        //     if ($count <= 0) {
-        //         if ($diff > $sch) {
+        foreach ($session as $s) {
+            $count = $s->count;
+            $le = $s->updated_at;
+            $sch = $s->schedule;
+            $diff = $le->diffInSeconds($now);
+            // dd($diff,$sch);
+            if ($count <= 0) {
+                if ($diff > $sch) {
 
-        //             $scontol->create_session($s);
-        //             $curr = sessions::find($s->id);
-        //             $count = $count - 1;
-        //             $curr->count = $count;
-        //             $curr->save();
-        //             // dd($curr->count);
-        //         }
-        //     } elseif ($count > 1) {
-        //         $scontol->create_session($s);
-        //         $curr = sessions::find($s->id);
+                    $scontol->create_session($s);
+                    $curr = sessions::find($s->id);
+                    $count = $count - 1;
+                    $curr->count = $count;
+                    $curr->save();
+                    // dd($curr->count);
+                }
+            } elseif ($count > 1) {
+                $scontol->create_session($s);
+                $curr = sessions::find($s->id);
 
-        //         $count = $count - 1;
+                $count = $count - 1;
 
-        //         $curr->count = $count;
-        //         $curr->save();
+                $curr->count = $count;
+                $curr->save();
 
-        //     }
+            }
 
-        // }
+        }
 
         #alerts
         $alerts = alerts::all();
