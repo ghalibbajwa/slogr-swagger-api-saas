@@ -19,6 +19,7 @@ RUN echo '<IfModule mod_headers.c>\n' \
 RUN a2enconf cors
 
 
+
 RUN  apt-get -y install cron
 
 RUN a2enmod rewrite
@@ -26,6 +27,19 @@ RUN a2enmod rewrite
 RUN usermod -u 1000 www-data
 
 
+# Enable Apache SSL configuration
+COPY cert.crt  /etc/ssl/certs/ssl-cert-snakeoil.pem
+COPY private.key  /etc/ssl/private/ssl-cert-snakeoil.key
+
+
+
+RUN a2enmod ssl
+RUN a2ensite default-ssl
+
+
+ENV APACHE_DOCUMENT_ROOT /var/www/html/
+
+RUN a2enmod rewrite
 
 RUN docker-php-ext-install bcmath
 RUN docker-php-ext-enable bcmath
@@ -48,6 +62,7 @@ RUN a2enmod rewrite
 
 # Expose port
 EXPOSE 80
+EXPOSE 443
 
 RUN crontab -l | { cat; echo "*/2 * * * *   cd /var/www/html && /usr/local/bin/php artisan schedule:run >> /var/log/cron.log 2>&1"; } | crontab -
 
