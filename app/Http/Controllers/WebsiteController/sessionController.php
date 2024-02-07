@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\WebsiteController;
 
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\URL;
@@ -85,7 +86,7 @@ class sessionController extends Controller
 
         $userOrganizationId = auth()->user()->organization_id;
         $sessions = sessions::orderBy('created_at', 'desc')->where('organization_id', $userOrganizationId)->orwhere('organization_id',1)->get();
-
+        
         if ($request->c_name) {
             $c_name = $request->c_name;
             $filteredAgents = $sessions->filter(function ($sessions) use ($c_name) {
@@ -115,6 +116,7 @@ class sessionController extends Controller
         }
 
 
+       
         $sessionsarray = $sessions->toArray();
 
         $offset = ($page - 1) * $size;
@@ -126,6 +128,8 @@ class sessionController extends Controller
         $data['prev'] = $prev;
         $data['page-size'] = $size;
         $data['sessions'] = $sessionsForPagew;
+        $data['current_time']=Carbon::now()->toDateTimeString();
+
 
 
         return response()->json(['data' => $data])->setStatusCode(200);

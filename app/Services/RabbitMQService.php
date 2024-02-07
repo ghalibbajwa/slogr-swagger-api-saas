@@ -18,7 +18,7 @@ class RabbitMQService
         $connection = new AMQPStreamConnection(env('MQ_HOST'), env('MQ_PORT'), env('MQ_USER'), env('MQ_PASS'), env('MQ_VHOST'));
         $channel = $connection->channel();
 
-        $channel->queue_declare('sessions', false, false, false, false);
+        $channel->exchange_declare('sessions', 'fanout', false, false, false);
 
         $channel->close();
         $connection->close();
@@ -32,7 +32,7 @@ class RabbitMQService
         //$channel->queue_declare('agent', false, false, false, false);
         //$channel->queue_bind('agent', 'test_exchange', 'test_key');
         $msg = new AMQPMessage($message);
-        $channel->basic_publish($msg, '', $queue);
+        $channel->basic_publish($msg,  $queue);
         echo " [x] Sent $message to test_exchange / test_queue.\n";
         $channel->close();
         $connection->close();
